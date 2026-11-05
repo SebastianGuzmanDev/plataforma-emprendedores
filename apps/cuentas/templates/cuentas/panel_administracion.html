@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Panel de administración · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <span class="etiqueta-estado">Próximamente</span>
+  <h1 class="titulo-linea">Panel de administración</h1>
+  <p>Aquí podrás desactivar cuentas o contenido inapropiado para mantener la plataforma confiable.</p>
+  <p class="acciones"><a class="boton boton--secundario" href="{% url 'cuentas:mi_cuenta' %}">Volver a mi cuenta</a></p>
+</div></div>
+{% endblock %}

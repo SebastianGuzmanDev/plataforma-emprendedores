@@ -1,0 +1,744 @@
+/*
+ * Estilos de la Plataforma de Emprendedores. Diseño móvil primero (RNF-03, desde
+ * 360 px) y solo con los tokens de marca.css.
+ *
+ * Recursos del manual que se aplican:
+ * - Fondo blanco como base (pág. 06).
+ * - Logotipo en su aplicación principal, arriba a la izquierda (pág. 12 y 26),
+ *   con ancho mínimo equivalente a 5 cm (≈190 px, pág. 10) y área de reserva.
+ * - Bloque diagonal y arco del "elemento gráfico" (tilde + O, pág. 05 y 22), de uso
+ *   libre para el diseñador.
+ * - Títulos con línea y punto final, como en las páginas del manual.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--color-primario);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primario);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulos);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--color-primario);
+  margin: 0 0 0.75rem;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 5vw + 0.5rem, 2.6rem);
+}
+
+h2 {
+  font-size: clamp(1.35rem, 2vw + 0.8rem, 1.75rem);
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.saltar {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 10;
+  padding: 0.6rem 1rem;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.saltar:focus {
+  top: 1rem;
+}
+
+/* ------------------------------------------------------------------ Encabezado */
+.encabezado {
+  border-bottom: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+}
+
+.encabezado__fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding-block: 1.25rem;
+}
+
+.encabezado__marca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+}
+
+/* Tamaño mínimo (pág. 10): 5 cm ≈ 190 px. Área de reserva alrededor (pág. 08). */
+.encabezado__logo {
+  display: block;
+  flex: 0 0 auto;
+  width: 200px;
+  min-width: 190px;
+  line-height: 0;
+}
+
+.encabezado__logo img {
+  width: 100%;
+}
+
+.encabezado__plataforma {
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+  color: var(--color-primario);
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--color-borde);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.nav form {
+  margin: 0;
+}
+
+.insignia-rol {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-acento);
+  color: var(--color-texto);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media (max-width: 40rem) {
+  .encabezado__plataforma {
+    padding-left: 0;
+    border-left: 0;
+    flex-basis: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------ Botones */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.25rem;
+  border: 2px solid var(--color-primario);
+  border-radius: 0.4rem;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.boton--primario {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.boton--primario:hover {
+  background: var(--color-fondo);
+  color: var(--color-primario);
+}
+
+.boton--secundario {
+  background: var(--color-fondo);
+  color: var(--color-primario);
+}
+
+.boton--secundario:hover {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+/* Sobre fondo azul */
+.boton--claro {
+  border-color: var(--color-sobre-primario);
+  background: var(--color-sobre-primario);
+  color: var(--color-primario);
+}
+
+.boton--claro:hover,
+.boton--contorno-claro {
+  border-color: var(--color-sobre-primario);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.boton--contorno-claro:hover {
+  background: var(--color-sobre-primario);
+  color: var(--color-primario);
+}
+
+.boton--compacto {
+  min-height: 2.5rem;
+  padding: 0.4rem 0.9rem;
+}
+
+.boton--bloque {
+  width: 100%;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* ------------------------------------------------------------------ Títulos de sección (línea con punto) */
+.titulo-linea {
+  position: relative;
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.25rem;
+}
+
+.titulo-linea::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(100%, 16rem);
+  height: 1px;
+  background: var(--color-primario);
+}
+
+.titulo-linea::before {
+  content: "";
+  position: absolute;
+  left: min(100%, 16rem);
+  bottom: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primario);
+}
+
+/* ------------------------------------------------------------------ Panel de marca (azul + elemento gráfico) */
+.panel-marca {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  isolation: isolate;
+}
+
+.panel-marca h1,
+.panel-marca h2,
+.panel-marca a:not(.boton) {
+  color: var(--color-sobre-primario);
+}
+
+.panel-marca :focus-visible {
+  outline-color: var(--color-sobre-primario);
+}
+
+/* Tilde del elemento gráfico: bloque diagonal naranja */
+.panel-marca::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: 9rem;
+  height: 5rem;
+  background: var(--color-acento);
+  clip-path: polygon(45% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* "O" del elemento gráfico: arco naranja */
+.panel-marca::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -7rem;
+  bottom: -7rem;
+  width: 15rem;
+  height: 15rem;
+  border: 2.4rem solid var(--color-acento);
+  border-radius: 50%;
+}
+
+.panel-marca__contenido {
+  position: relative;
+  padding: 1.75rem 1rem 2rem;
+  max-width: 34rem;
+}
+
+.panel-marca__contenido p {
+  max-width: 30rem;
+}
+
+.lista-marca {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.lista-marca li {
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.lista-marca li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 3px solid var(--color-acento);
+  border-radius: 50%;
+}
+
+@media (max-width: 47.99rem) {
+  .panel-marca::after,
+  .lista-marca {
+    display: none;
+  }
+
+  .panel-marca::before {
+    width: 5rem;
+    height: 2.5rem;
+  }
+
+  .panel-marca__contenido {
+    padding-block: 1.25rem;
+    padding-right: 4.5rem;
+  }
+
+  .panel-marca__contenido p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ Diseño de las páginas de cuenta */
+.acceso {
+  flex: 1;
+  display: grid;
+}
+
+.acceso__formulario {
+  padding: 1.75rem 1rem 3rem;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 48rem) {
+  .acceso {
+    grid-template-columns: minmax(18rem, 5fr) 7fr;
+  }
+
+  /* El texto empieza debajo del bloque diagonal para no quedar sobre el naranja. */
+  .acceso .panel-marca__contenido {
+    position: sticky;
+    top: 0;
+    padding: 7rem 2rem 10rem;
+    margin-left: auto;
+  }
+
+  .acceso__formulario {
+    padding: 3.5rem 2rem 4rem;
+    margin-inline: 0;
+  }
+}
+
+.texto-secundario {
+  font-size: 0.95rem;
+}
+
+/* ------------------------------------------------------------------ Formularios */
+.formulario {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.campo {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.campo label,
+.grupo legend {
+  font-weight: 600;
+}
+
+.campo input[type="email"],
+.campo input[type="password"],
+.campo input[type="text"] {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--color-borde);
+  border-radius: 0.4rem;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font: inherit;
+}
+
+.campo input:focus-visible {
+  border-color: var(--color-primario);
+}
+
+.campo--error input,
+.grupo--error .opcion-rol {
+  border-color: var(--color-texto);
+  border-left: 6px solid var(--color-acento);
+}
+
+.campo__ayuda {
+  font-size: 0.9rem;
+}
+
+.campo__ayuda ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.campo__error {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.icono-alerta {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: var(--color-acento);
+  color: var(--color-texto);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Selección de rol (tarjetas de opción) */
+.grupo {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.grupo legend {
+  padding: 0;
+  margin-bottom: 0.5rem;
+}
+
+.opciones-rol {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 36rem) {
+  .opciones-rol {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.opcion-rol {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.6rem;
+  align-items: start;
+  align-content: start;
+  padding: 0.9rem;
+  border: 2px solid var(--color-borde);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.opcion-rol:has(input:checked) {
+  border-color: var(--color-primario);
+  box-shadow: inset 0 0 0 1px var(--color-primario);
+}
+
+.opcion-rol input {
+  margin: 0.05rem 0 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--color-primario);
+}
+
+.opcion-rol__nombre {
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+.opcion-rol__descripcion {
+  grid-column: 2;
+  font-size: 0.92rem;
+}
+
+/* Casilla del aviso de privacidad */
+.casilla {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: start;
+}
+
+.casilla input {
+  margin: 0.05rem 0 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--color-primario);
+}
+
+.casilla label {
+  font-weight: 400;
+}
+
+/* ------------------------------------------------------------------ Mensajes */
+.mensajes {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 1rem;
+}
+
+.aviso {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-borde);
+  border-left-width: 6px;
+  border-radius: 0.4rem;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+.aviso p,
+.aviso ul {
+  margin: 0;
+}
+
+.aviso ul {
+  padding-left: 1.1rem;
+}
+
+.aviso--exito,
+.aviso--info {
+  border-left-color: var(--color-primario);
+}
+
+.aviso--error {
+  border-left-color: var(--color-acento);
+}
+
+/* ------------------------------------------------------------------ Inicio */
+.portada .panel-marca__contenido {
+  padding-block: 2.5rem 3rem;
+  max-width: 44rem;
+}
+
+@media (min-width: 48rem) {
+  .portada .panel-marca__contenido {
+    padding-block: 4.5rem 5.5rem;
+  }
+
+  .portada .panel-marca::before {
+    width: 22rem;
+    height: 11rem;
+  }
+
+  .portada .panel-marca::after {
+    right: 6%;
+    bottom: -12rem;
+    width: 22rem;
+    height: 22rem;
+    border-width: 3.4rem;
+  }
+}
+
+.seccion {
+  padding-block: 2.5rem 3rem;
+}
+
+.tarjetas {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .tarjetas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tarjeta {
+  padding: 1.25rem;
+  border: 1px solid var(--color-borde);
+  border-top: 6px solid var(--color-primario);
+  border-radius: 0.5rem;
+}
+
+.tarjeta--acento {
+  border-top-color: var(--color-acento);
+}
+
+.tarjeta p:last-child {
+  margin-bottom: 0;
+}
+
+.etiqueta-estado {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--color-texto);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ Páginas de contenido */
+.pagina {
+  flex: 1;
+  padding-block: 2rem 3rem;
+}
+
+.pagina__cuerpo {
+  max-width: 46rem;
+}
+
+.datos {
+  display: grid;
+  gap: 0;
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 0.5rem;
+}
+
+.datos div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+}
+
+.datos div + div {
+  border-top: 1px solid var(--color-borde);
+}
+
+@media (min-width: 36rem) {
+  .datos div {
+    grid-template-columns: 14rem 1fr;
+  }
+}
+
+.datos dt {
+  font-weight: 700;
+}
+
+.datos dd {
+  margin: 0;
+}
+
+.legal h2 {
+  margin-top: 2rem;
+}
+
+.legal li {
+  margin-bottom: 0.4rem;
+}
+
+/* ------------------------------------------------------------------ Pie */
+.pie {
+  border-top: 1px solid var(--color-borde);
+  font-size: 0.9rem;
+}
+
+.pie__fila {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  padding-block: 1.25rem;
+}
+
+.pie p {
+  margin: 0;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

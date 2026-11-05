@@ -1,0 +1,15 @@
+{% if form.errors %}
+  <div class="aviso aviso--error" role="alert" tabindex="-1" id="resumen-errores">
+    <span class="icono-alerta" aria-hidden="true">!</span>
+    <div>
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}<p><strong>{{ error }}</strong></p>{% endfor %}
+      {% else %}
+        <p><strong>Revisa los datos marcados:</strong></p>
+        <ul>
+          {% for campo in form %}{% for error in campo.errors %}<li><a href="#{{ campo.id_for_label }}">{{ error }}</a></li>{% endfor %}{% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}

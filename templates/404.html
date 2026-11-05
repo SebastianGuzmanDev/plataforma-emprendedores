@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Página no encontrada · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <h1 class="titulo-linea">No encontramos esta página</h1>
+  <p>Puede que el enlace esté mal escrito o que la página ya no exista.</p>
+  <p class="acciones"><a class="boton boton--primario" href="{% url 'inicio' %}">Volver al inicio</a></p>
+</div></div>
+{% endblock %}

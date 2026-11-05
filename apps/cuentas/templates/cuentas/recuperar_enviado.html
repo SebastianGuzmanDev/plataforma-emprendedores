@@ -1,0 +1,10 @@
+{% extends "cuentas/_base_acceso.html" %}
+{% block titulo %}Revisa tu correo · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block formulario %}
+<h1 class="titulo-linea">Revisa tu correo</h1>
+<div class="aviso aviso--info" role="status">
+  <p>Si el correo está registrado, te enviamos un enlace para restablecer tu contraseña. Revisa también la carpeta de correo no deseado. El enlace vence en 1 hora y solo se puede usar una vez.</p>
+</div>
+<p class="acciones"><a class="boton boton--secundario" href="{% url 'cuentas:ingresar' %}">Volver a iniciar sesión</a></p>
+{% endblock %}

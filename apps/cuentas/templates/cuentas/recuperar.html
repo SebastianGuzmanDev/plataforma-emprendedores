@@ -1,0 +1,16 @@
+{% extends "cuentas/_base_acceso.html" %}
+{% block titulo %}Recuperar contraseña · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block formulario %}
+<h1 class="titulo-linea">Recupera tu contraseña</h1>
+<p>Escribe el correo institucional con el que te registraste y te enviaremos un enlace para elegir una contraseña nueva.</p>
+
+{% include "cuentas/_errores.html" %}
+
+<form class="formulario" method="post" action="{% url 'cuentas:recuperar' %}" novalidate>
+  {% csrf_token %}
+  {% include "cuentas/_campo.html" with campo=form.email %}
+  <button type="submit" class="boton boton--primario boton--bloque">Enviar enlace</button>
+</form>
+<p class="acciones"><a href="{% url 'cuentas:ingresar' %}">Volver a iniciar sesión</a></p>
+{% endblock %}

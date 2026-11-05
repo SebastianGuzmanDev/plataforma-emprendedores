@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Panel del emprendedor · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <span class="etiqueta-estado">Próximamente</span>
+  <h1 class="titulo-linea">Panel del emprendedor</h1>
+  <p>Aquí crearás el perfil de tu emprendimiento (descripción, categoría, horarios y zona de entrega) y publicarás tus productos con foto y precio de referencia.</p>
+  <p class="acciones"><a class="boton boton--secundario" href="{% url 'cuentas:mi_cuenta' %}">Volver a mi cuenta</a></p>
+</div></div>
+{% endblock %}

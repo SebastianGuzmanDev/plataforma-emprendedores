@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block titulo %}Inicio · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+{% block clase_main %}portada{% endblock %}
+
+{% block contenido %}
+<section class="panel-marca" aria-labelledby="titulo-portada">
+  <div class="contenedor">
+    <div class="panel-marca__contenido">
+      <h1 id="titulo-portada">Lo que se vende en el campus, en un solo lugar</h1>
+      <p>Comida, artesanías, videojuegos y más: los emprendimientos de la comunidad Luis Amigó, a la mano de estudiantes, docentes y directivos.</p>
+      <div class="acciones">
+        {% if user.is_authenticated %}
+          <a class="boton boton--claro" href="{% url 'cuentas:mi_cuenta' %}">Ir a mi cuenta</a>
+        {% else %}
+          <a class="boton boton--claro" href="{% url 'cuentas:registro' %}">Crear mi cuenta</a>
+          <a class="boton boton--contorno-claro" href="{% url 'cuentas:ingresar' %}">Iniciar sesión</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion contenedor" aria-labelledby="titulo-roles">
+  <h2 id="titulo-roles" class="titulo-linea">¿Cómo puedes participar?</h2>
+  <ul class="tarjetas">
+    <li class="tarjeta">
+      <h3>Compradores</h3>
+      <p>Estudiantes, docentes, personal administrativo y directivos que quieren saber qué se vende en la universidad y contactar al vendedor para organizar la entrega.</p>
+    </li>
+    <li class="tarjeta tarjeta--acento">
+      <h3>Emprendedores</h3>
+      <p>Muestra tu portafolio a toda la comunidad y lleva el control de tu inventario y de tus ingresos y gastos, incluida la materia prima.</p>
+    </li>
+    <li class="tarjeta">
+      <h3>Comunidad confiable</h3>
+      <p>Solo se registran personas con correo institucional, y la administración puede retirar contenido inapropiado.</p>
+    </li>
+  </ul>
+</section>
+{% endblock %}

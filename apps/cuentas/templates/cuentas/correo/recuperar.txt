@@ -1,0 +1,12 @@
+{% autoescape off %}Hola:
+
+Recibimos una solicitud para restablecer la contraseña de la cuenta {{ email }} en la Plataforma de Emprendedores de la Universidad Católica Luis Amigó.
+
+Abre este enlace para elegir una contraseña nueva. Vence en 1 hora y solo funciona una vez:
+
+{{ protocol }}://{{ domain }}{% url 'cuentas:restablecer' uidb64=uid token=token %}
+
+Si no pediste este cambio, ignora este mensaje: tu contraseña actual sigue funcionando.
+
+Plataforma de Emprendedores · Universidad Católica Luis Amigó
+{% endautoescape %}

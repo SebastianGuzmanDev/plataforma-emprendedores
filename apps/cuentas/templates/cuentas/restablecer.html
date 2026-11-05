@@ -1,0 +1,22 @@
+{% extends "cuentas/_base_acceso.html" %}
+{% block titulo %}Nueva contraseña · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block formulario %}
+{% if validlink %}
+  <h1 class="titulo-linea">Elige una contraseña nueva</h1>
+  {% include "cuentas/_errores.html" %}
+  <form class="formulario" method="post" novalidate>
+    {% csrf_token %}
+    {% include "cuentas/_campo.html" with campo=form.new_password1 %}
+    {% include "cuentas/_campo.html" with campo=form.new_password2 %}
+    <button type="submit" class="boton boton--primario boton--bloque">Guardar contraseña</button>
+  </form>
+{% else %}
+  <h1 class="titulo-linea">Enlace no disponible</h1>
+  <div class="aviso aviso--error" role="alert">
+    <span class="icono-alerta" aria-hidden="true">!</span>
+    <p>El enlace no es válido o ya venció. Los enlaces de recuperación duran 1 hora y solo se pueden usar una vez.</p>
+  </div>
+  <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:recuperar' %}">Pedir un enlace nuevo</a></p>
+{% endif %}
+{% endblock %}

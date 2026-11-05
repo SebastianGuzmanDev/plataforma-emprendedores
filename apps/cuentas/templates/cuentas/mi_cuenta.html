@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}Mi cuenta · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="pagina__cuerpo">
+    <h1 class="titulo-linea">Mi cuenta</h1>
+    <dl class="datos">
+      <div><dt>Correo institucional</dt><dd>{{ usuario.correo_institucional }}</dd></div>
+      <div><dt>Rol</dt><dd>{{ usuario.get_rol_display }}</dd></div>
+      <div><dt>Aviso de privacidad</dt><dd>Aceptado (versión {{ usuario.aviso_privacidad_version }}) el {{ usuario.aviso_privacidad_fecha|date:"j \d\e F \d\e Y, H:i"|lower }}. <a href="{% url 'aviso_privacidad' %}">Consultar el aviso</a></dd></div>
+    </dl>
+
+    {% if usuario.es_emprendedor %}
+      <h2>Tu emprendimiento</h2>
+      <p>Desde tu panel crearás el perfil de tu emprendimiento y publicarás tus productos.</p>
+      <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:panel_emprendedor' %}">Ir al panel del emprendedor</a></p>
+    {% elif usuario.es_administrador %}
+      <h2>Administración</h2>
+      <p>Desde el panel de administración podrás desactivar cuentas o contenido que incumpla las reglas.</p>
+      <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:panel_administracion' %}">Ir al panel de administración</a></p>
+    {% else %}
+      <h2>Qué sigue</h2>
+      <p>Muy pronto podrás explorar el catálogo de emprendimientos de la universidad y contactar a los vendedores.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
