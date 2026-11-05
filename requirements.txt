@@ -1,0 +1,3 @@
+# Dependencias de la Plataforma de Emprendedores (MVP)
+Django>=5.2,<5.3        # 5.2 LTS: soporte de seguridad hasta abril de 2028
+argon2-cffi>=25.1,<26   # Hash Argon2id para contraseñas (RNF-04)
