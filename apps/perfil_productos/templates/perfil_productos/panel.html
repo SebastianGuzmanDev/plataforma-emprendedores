@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load portafolio %}
+{% block titulo %}Mi emprendimiento · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="encabezado-pagina">
+    <h1 class="titulo-linea">Mi emprendimiento</h1>
+    {% if emprendimiento %}
+      <div class="acciones acciones--sin-margen">
+        <a class="boton boton--primario" href="{% url 'emprendimiento:publicar' %}">Publicar producto</a>
+        <a class="boton boton--secundario" href="{% url 'emprendimiento:vista_previa' %}">Ver como comprador</a>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if not emprendimiento %}
+    <section class="tarjeta tarjeta--acento pagina__cuerpo" aria-labelledby="titulo-sin-perfil">
+      <h2 id="titulo-sin-perfil">Crea el perfil de tu emprendimiento</h2>
+      <p>Es lo primero que ven los compradores: qué vendes, tu categoría, tus horarios y dónde entregas. Lo necesitas para publicar productos.</p>
+      <p class="acciones acciones--sin-margen"><a class="boton boton--primario" href="{% url 'emprendimiento:perfil' %}">Crear perfil</a></p>
+    </section>
+  {% else %}
+    <section class="bloque" aria-labelledby="titulo-perfil">
+      <div class="bloque__encabezado">
+        <h2 id="titulo-perfil">Perfil</h2>
+        <a href="{% url 'emprendimiento:perfil' %}">Editar perfil</a>
+      </div>
+      <dl class="datos">
+        <div><dt>Categoría</dt><dd>{{ emprendimiento.categoria }}</dd></div>
+        <div><dt>Descripción</dt><dd>{{ emprendimiento.descripcion|linebreaksbr }}</dd></div>
+        <div><dt>Horarios</dt><dd>{{ emprendimiento.horarios }}</dd></div>
+        <div><dt>Zona de entrega</dt><dd>{{ emprendimiento.zona_entrega }}</dd></div>
+      </dl>
+    </section>
+
+    <section class="bloque" aria-labelledby="titulo-productos">
+      <h2 id="titulo-productos">Productos en el catálogo ({{ productos_visibles|length }})</h2>
+      {% if productos_visibles %}
+        <ul class="portafolio">
+          {% for producto in productos_visibles %}
+            <li class="item-producto">
+              <img class="item-producto__foto" src="{{ producto.foto.url }}" alt="{{ producto.nombre }}" width="88" height="88" loading="lazy">
+              <div class="item-producto__datos">
+                <p class="item-producto__nombre">{{ producto.nombre }}</p>
+                <p>{{ producto.precio_referencia|pesos }}</p>
+                {% include "perfil_productos/_estado.html" %}
+              </div>
+              <div class="item-producto__acciones">
+                {% if producto.estado == "DISPONIBLE" %}
+                  <a class="boton boton--secundario boton--compacto" href="{% url 'emprendimiento:editar' codigo=producto.codigo %}">Editar<span class="visualmente-oculto"> {{ producto.nombre }}</span></a>
+                  <form method="post" action="{% url 'emprendimiento:agotado' codigo=producto.codigo %}">
+                    {% csrf_token %}
+                    <button type="submit" class="boton boton--secundario boton--compacto">Marcar agotado<span class="visualmente-oculto"> {{ producto.nombre }}</span></button>
+                  </form>
+                {% endif %}
+                <a class="boton boton--secundario boton--compacto" href="{% url 'emprendimiento:desactivar' codigo=producto.codigo %}">Desactivar<span class="visualmente-oculto"> {{ producto.nombre }}</span></a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Aún no tienes productos publicados.</p>
+        <p class="acciones acciones--sin-margen"><a class="boton boton--primario" href="{% url 'emprendimiento:publicar' %}">Publicar mi primer producto</a></p>
+      {% endif %}
+    </section>
+
+    {% if productos_desactivados %}
+      <section class="bloque" aria-labelledby="titulo-desactivados">
+        <h2 id="titulo-desactivados">Desactivados ({{ productos_desactivados|length }})</h2>
+        <p class="texto-secundario">No aparecen en el catálogo y no se pueden reactivar. Para volver a ofrecer uno, publícalo de nuevo.</p>
+        <ul class="lista-simple">
+          {% for producto in productos_desactivados %}<li>{{ producto.nombre }} · {{ producto.precio_referencia|pesos }}</li>{% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

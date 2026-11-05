@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load formularios %}
+{% block titulo %}{% if editando %}Editar perfil{% else %}Crear perfil{% endif %} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="pagina__cuerpo">
+    <h1 class="titulo-linea">{% if editando %}Editar el perfil de tu emprendimiento{% else %}Crea el perfil de tu emprendimiento{% endif %}</h1>
+    <div class="aviso aviso--info">
+      <p>La información de este perfil se mostrará públicamente en el catálogo, para toda la comunidad universitaria. No incluyas datos personales que no quieras compartir.</p>
+    </div>
+
+    {% include "cuentas/_errores.html" %}
+
+    <form class="formulario formulario--separado" method="post" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_campo.html" with campo=form.descripcion %}
+
+      <fieldset class="grupo{% if form.categoria.errors %} grupo--error{% endif %}" {% if form.categoria.errors %}aria-describedby="{{ form.categoria.auto_id }}_error"{% endif %}>
+        <legend>{{ form.categoria.label }}</legend>
+        <div class="opciones-categoria">
+          {% for opcion in form.categoria %}
+            <label class="opcion-categoria" for="{{ opcion.id_for_label }}">{{ opcion.tag }} <span>{{ opcion.choice_label }}</span></label>
+          {% endfor %}
+        </div>
+        {% if form.categoria.errors %}
+          <div id="{{ form.categoria.auto_id }}_error">
+            {% for error in form.categoria.errors %}<p class="campo__error"><span class="icono-alerta" aria-hidden="true">!</span><span>{{ error }}</span></p>{% endfor %}
+          </div>
+        {% endif %}
+      </fieldset>
+
+      {% include "cuentas/_campo.html" with campo=form.horarios %}
+      {% include "cuentas/_campo.html" with campo=form.zona_entrega %}
+
+      <div class="acciones acciones--sin-margen">
+        <button type="submit" class="boton boton--primario">{% if editando %}Guardar cambios{% else %}Publicar perfil{% endif %}</button>
+        <a class="boton boton--secundario" href="{% url 'emprendimiento:panel' %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

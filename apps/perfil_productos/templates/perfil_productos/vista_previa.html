@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Vista previa · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="aviso aviso--info franja-previa" role="note">
+    <p><strong>Vista previa.</strong> Así verán los compradores tu emprendimiento en el catálogo. Los productos desactivados no aparecen. <a href="{% url 'emprendimiento:panel' %}">Volver a mi emprendimiento</a></p>
+  </div>
+
+  <section class="perfil-publico" aria-labelledby="titulo-emprendimiento">
+    <span class="estado estado--categoria">{{ emprendimiento.categoria }}</span>
+    <h1 id="titulo-emprendimiento" class="titulo-linea">Emprendimiento de {{ emprendimiento.categoria|lower }}</h1>
+    <p class="perfil-publico__descripcion">{{ emprendimiento.descripcion|linebreaksbr }}</p>
+    <dl class="datos datos--compactos">
+      <div><dt>Horarios</dt><dd>{{ emprendimiento.horarios }}</dd></div>
+      <div><dt>Zona de entrega</dt><dd>{{ emprendimiento.zona_entrega }}</dd></div>
+    </dl>
+  </section>
+
+  <section class="seccion seccion--compacta" aria-labelledby="titulo-productos-publicos">
+    <h2 id="titulo-productos-publicos">Productos</h2>
+    {% if productos %}
+      <ul class="rejilla-productos">
+        {% for producto in productos %}<li>{% include "perfil_productos/_tarjeta_producto.html" %}</li>{% endfor %}
+      </ul>
+    {% else %}
+      <p>Todavía no hay productos visibles.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
