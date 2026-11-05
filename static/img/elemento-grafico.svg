@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 124" aria-hidden="true">
+  <!-- Elemento gráfico del manual (pág. 05): tilde azul sobre la "O" naranja -->
+  <polygon points="52,0 86,0 62,32 28,32" fill="#007b99"/>
+  <circle cx="50" cy="84" r="31" fill="none" stroke="#f39200" stroke-width="16"/>
+</svg>

@@ -1,0 +1,41 @@
+/*
+ * Tokens de marca · Manual de Identidad Visual U. Católica Luis Amigó (versión 02)
+ *
+ * Pág. 06 Colores institucionales: blanco como fondo principal; azul (sabiduría),
+ *         naranja (vida y dinamismo), gris (madurez y elegancia).
+ * Pág. 07 Composición del color, medios digitales:
+ *         Azul    R0   G123 B153  #007b99  (Pantone 3145 C)
+ *         Naranja R243 G146 B0    #f39200  (Pantone 144 C)
+ *         Gris    R132 G133 B133  #848585  (Pantone 423 C)
+ * Pág. 13 Aplicación sobre fondo negro: negro.
+ * Pág. 11 Tipografía: Ingra Cd Book (función) y Azo Sans Medium (nombre).
+ *
+ * Este es el ÚNICO archivo que contiene valores de color. El resto de estilos usa
+ * estas variables (lo verifica test_rnf_interfaz.py).
+ *
+ * Accesibilidad (RNF-11, WCAG 2.1 AA):
+ *   negro/blanco 21:1 · azul/blanco 4.89:1 · blanco/azul 4.89:1 · negro/naranja 8.9:1
+ *   naranja/blanco 2.35:1 y gris/blanco 3.7:1 → NO se usan para texto sobre blanco;
+ *   el naranja es acento decorativo y el gris se usa en bordes (≥ 3:1).
+ */
+:root {
+  --ula-azul: #007b99;
+  --ula-naranja: #f39200;
+  --ula-gris: #848585;
+  --ula-blanco: #ffffff;
+  --ula-negro: #000000;
+
+  /* Roles de color */
+  --color-fondo: var(--ula-blanco);
+  --color-texto: var(--ula-negro);
+  --color-primario: var(--ula-azul);
+  --color-sobre-primario: var(--ula-blanco);
+  --color-acento: var(--ula-naranja);
+  --color-borde: var(--ula-gris);
+
+  /* Tipografía corporativa con alternativas del sistema si la licencia no está instalada */
+  --fuente-titulos: "Ingra Cd", "Ingra Condensed", "Ingra", "Roboto Condensed", "Arial Narrow",
+    "Helvetica Neue", Arial, sans-serif;
+  --fuente-texto: "Azo Sans", "Azo Sans Web", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
