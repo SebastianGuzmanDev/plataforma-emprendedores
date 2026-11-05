@@ -6,8 +6,8 @@ Proyecto del curso **Ingeniería de Software** · Jerónimo Álvarez Calvachi y 
 
 | Épica | Módulo | Estado |
 |---|---|---|
-| E1 Cuentas y acceso (HU-01 a HU-03) | `apps/cuentas` | **Entregada, en revisión** ([documento](docs/epica-1/EPICA-1.md)) |
-| E2 Perfil y productos (HU-04 a HU-06) | — | Pendiente |
+| E1 Cuentas y acceso (HU-01 a HU-03) | `apps/cuentas` | Entregada ([documento](docs/epica-1/EPICA-1.md)) |
+| E2 Perfil y productos (HU-04 a HU-06) | `apps/perfil_productos` | **Entregada, en revisión** ([documento](docs/epica-2/EPICA-2.md)) |
 | E3 Catálogo (HU-07 a HU-10) | — | Pendiente |
 | E4 Contacto por chat (HU-11 a HU-14) | — | Pendiente |
 | E5 Inventario (HU-15 a HU-18) | — | Pendiente |
@@ -19,6 +19,7 @@ Proyecto del curso **Ingeniería de Software** · Jerónimo Álvarez Calvachi y 
 - Python 3.10 o superior y **Django 5.2 LTS** (soporte de seguridad hasta abril de 2028).
 - Monolito modular de tres capas (presentación, lógica de negocio y acceso a datos), con un módulo por épica, como define la sección 2.2 del Entregable 2.
 - SQLite en desarrollo y pruebas. Contraseñas con hash **Argon2id**.
+- Fotos de productos validadas y normalizadas con **Pillow** (sin metadatos EXIF), guardadas en `media/` (separado de la base de datos).
 - Interfaz con plantillas de Django y CSS propio basado en el *Manual de Identidad Visual* de la universidad (`static/css/marca.css`).
 
 ## Cómo ejecutarlo
@@ -31,7 +32,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Abre <http://127.0.0.1:8000>. En desarrollo, los correos de recuperación de contraseña se imprimen en la terminal del servidor.
+Abre <http://127.0.0.1:8000>. En desarrollo, los correos de recuperación de contraseña se imprimen en la terminal del servidor y las fotos de productos se guardan en `media/`.
 
 Para asignar el rol de administrador a una cuenta ya registrada (RF-03: se asigna internamente):
 
@@ -42,10 +43,10 @@ python manage.py promover_administrador correo@amigo.edu.co
 ## Cómo probarlo
 
 ```bash
-python manage.py test apps.cuentas -v 2
+python manage.py test -v 2
 ```
 
-Resultado esperado: `Ran 88 tests` y `OK`. La batería completa (automática y manual) con sus criterios de aprobación está en [docs/epica-1/EPICA-1.md](docs/epica-1/EPICA-1.md#6-batería-de-pruebas-de-validación).
+Resultado esperado: `Ran 155 tests` y `OK` (88 de E1 y 67 de E2). Las baterías completas (automáticas y manuales) con sus criterios de aprobación están en [docs/epica-1/EPICA-1.md](docs/epica-1/EPICA-1.md#6-batería-de-pruebas-de-validación) y [docs/epica-2/EPICA-2.md](docs/epica-2/EPICA-2.md#7-batería-de-pruebas-de-validación).
 
 Verificación de la configuración de producción (RNF-04):
 
@@ -62,6 +63,8 @@ npm install --no-save playwright@1.49.1 && npx playwright install
 node scripts/verificar_interfaz.mjs chromium   # también: firefox, webkit
 ```
 
+Para incluir las pantallas del emprendedor, define `EMPRENDEDOR_CORREO` y `EMPRENDEDOR_CONTRASENA` de una cuenta emprendedora con perfil.
+
 ## Estructura
 
 ```
@@ -74,6 +77,11 @@ apps/cuentas/           E1 · Cuentas y acceso
   decorators.py         rol_requerido(): control de acceso por rol para E2 a E7
   middleware.py         Sin caché para páginas vistas con sesión (RNF-05)
   tests/                Pruebas unitarias y de integración por HU y RNF
+apps/perfil_productos/  E2 · Perfil y productos
+  models.py             Categoria, Emprendimiento, Producto y estados (diagrama ES1)
+  reglas.py             RN-07: precio y foto (validación y normalización)
+  servicios.py          Casos de uso CU-04 a CU-06 (secuencia S3)
+  models.visibles_en_catalogo()  Contrato RN-09 que usará el Catálogo (E3)
 templates/              Plantillas comunes, aviso de privacidad y páginas de error
 static/css/marca.css    Tokens de color y tipografía del manual de identidad
 static/img/             Logotipo institucional (vector) y elemento gráfico

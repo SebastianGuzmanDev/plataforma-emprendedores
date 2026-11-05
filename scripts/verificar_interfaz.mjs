@@ -12,6 +12,9 @@
  *   node scripts/verificar_interfaz.mjs                     # chromium
  *   node scripts/verificar_interfaz.mjs firefox             # o webkit (motor de Safari)
  *   BASE_URL=http://127.0.0.1:8000 node scripts/verificar_interfaz.mjs chromium
+ *
+ * Pantallas del emprendedor (E2): define una cuenta emprendedora con perfil y productos
+ *   EMPRENDEDOR_CORREO=... EMPRENDEDOR_CONTRASENA=... node scripts/verificar_interfaz.mjs
  */
 import { mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -28,6 +31,12 @@ const PAGINAS = [
   ["ingresar", "/cuentas/ingresar/"],
   ["recuperar", "/cuentas/recuperar/"],
   ["aviso-privacidad", "/privacidad/"],
+];
+const PAGINAS_EMPRENDEDOR = [
+  ["e2-panel", "/emprendimiento/"],
+  ["e2-perfil", "/emprendimiento/perfil/"],
+  ["e2-publicar", "/emprendimiento/productos/nuevo/"],
+  ["e2-vista-previa", "/emprendimiento/vista-previa/"],
 ];
 const carpeta = new URL(`./capturas/${navegador}/`, import.meta.url);
 mkdirSync(carpeta, { recursive: true });
@@ -71,6 +80,28 @@ for (const ancho of ANCHOS) {
   await revisar(page, "registro-con-errores", ancho);
   await page.screenshot({ path: new URL(`registro-errores-${ancho}.png`, carpeta).pathname, fullPage: true });
   await page.close();
+
+  if (process.env.EMPRENDEDOR_CORREO) {
+    const contexto = await browser.newContext({ viewport: { width: ancho, height: 800 } });
+    const privada = await contexto.newPage();
+    await privada.goto(BASE_URL + "/cuentas/ingresar/");
+    await privada.fill("#id_username", process.env.EMPRENDEDOR_CORREO);
+    await privada.fill("#id_password", process.env.EMPRENDEDOR_CONTRASENA || "");
+    await Promise.all([privada.waitForNavigation(), privada.click("form.formulario button[type=submit]")]);
+    for (const [nombre, ruta] of PAGINAS_EMPRENDEDOR) {
+      await privada.goto(BASE_URL + ruta);
+      await revisar(privada, nombre, ancho);
+      await privada.screenshot({ path: new URL(`${nombre}-${ancho}.png`, carpeta).pathname, fullPage: true });
+    }
+    // Estado con errores de la publicación (HU-05, escenario 3) y del perfil (HU-04, escenario 2)
+    await privada.goto(BASE_URL + "/emprendimiento/productos/nuevo/");
+    await privada.fill("#id_nombre", "Arepa de prueba");
+    await privada.fill("#id_precio_referencia", "12a");
+    await Promise.all([privada.waitForNavigation(), privada.click("form.formulario button[type=submit]")]);
+    await revisar(privada, "e2-publicar-con-errores", ancho);
+    await privada.screenshot({ path: new URL(`e2-publicar-errores-${ancho}.png`, carpeta).pathname, fullPage: true });
+    await contexto.close();
+  }
 }
 await browser.close();
 
@@ -78,4 +109,5 @@ if (fallos.length) {
   console.error(`\n${fallos.length} problema(s):\n- ${fallos.join("\n- ")}`);
   process.exit(1);
 }
-console.log(`\nInterfaz verificada en ${navegador}: ${ANCHOS.length * (PAGINAS.length + 1)} vistas sin problemas.`);
+const vistas = ANCHOS.length * (PAGINAS.length + 1 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 1 : 0));
+console.log(`\nInterfaz verificada en ${navegador}: ${vistas} vistas sin problemas.`);
