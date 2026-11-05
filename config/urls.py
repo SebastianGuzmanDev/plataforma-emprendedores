@@ -1,4 +1,6 @@
 """Rutas de la aplicación: un grupo de rutas por módulo (épica)."""
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import include, path
 from django.views.generic import TemplateView
 
@@ -11,4 +13,10 @@ urlpatterns = [
     ),
     # E1 · Cuentas y acceso
     path("cuentas/", include("apps.cuentas.urls")),
+    # E2 · Perfil y productos
+    path("emprendimiento/", include("apps.perfil_productos.urls")),
 ]
+
+if settings.DEBUG:
+    # En desarrollo Django sirve las fotos; en producción las sirve el almacenamiento (D5).
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

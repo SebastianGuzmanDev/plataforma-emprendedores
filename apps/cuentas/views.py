@@ -74,12 +74,6 @@ def mi_cuenta(request):
     return render(request, "cuentas/mi_cuenta.html", {"usuario": request.user})
 
 
-@rol_requerido(Rol.EMPRENDEDOR)
-def panel_emprendedor(request):
-    """Punto de entrada del emprendedor; la Épica 2 agrega aquí su perfil y portafolio."""
-    return render(request, "cuentas/panel_emprendedor.html")
-
-
 @rol_requerido(Rol.ADMINISTRADOR)
 def panel_administracion(request):
     """Punto de entrada del administrador; la Épica 7 agrega aquí la moderación."""
