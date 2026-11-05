@@ -1,0 +1,52 @@
+{% extends "cuentas/_base_acceso.html" %}
+{% load formularios %}
+{% block titulo %}Crear cuenta · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block formulario %}
+<h1 class="titulo-linea">Crea tu cuenta</h1>
+<p class="texto-secundario">¿Ya tienes cuenta? <a href="{% url 'cuentas:ingresar' %}">Inicia sesión</a></p>
+
+{% include "cuentas/_errores.html" %}
+
+<form class="formulario" method="post" action="{% url 'cuentas:registro' %}" novalidate>
+  {% csrf_token %}
+  {% include "cuentas/_campo.html" with campo=form.correo_institucional %}
+
+  <fieldset class="grupo{% if form.rol.errors %} grupo--error{% endif %}" {% if form.rol.errors %}aria-describedby="{{ form.rol.auto_id }}_error"{% endif %}>
+    <legend>{{ form.rol.label }}</legend>
+    <div class="opciones-rol">
+      {% for opcion in form.rol %}
+        <label class="opcion-rol" for="{{ opcion.id_for_label }}">
+          {{ opcion.tag }}
+          <span class="opcion-rol__nombre">{{ opcion.choice_label }}</span>
+          <span class="opcion-rol__descripcion">{{ opcion.data.value|descripcion_rol }}</span>
+        </label>
+      {% endfor %}
+    </div>
+    {% if form.rol.errors %}
+      <div id="{{ form.rol.auto_id }}_error">
+        {% for error in form.rol.errors %}<p class="campo__error"><span class="icono-alerta" aria-hidden="true">!</span><span>{{ error }}</span></p>{% endfor %}
+      </div>
+    {% endif %}
+  </fieldset>
+
+  {% include "cuentas/_campo.html" with campo=form.contrasena %}
+  {% include "cuentas/_campo.html" with campo=form.contrasena_confirmacion %}
+
+  <div class="campo{% if form.acepta_aviso.errors %} campo--error{% endif %}">
+    <div class="casilla">
+      {{ form.acepta_aviso|campo_accesible }}
+      <label for="{{ form.acepta_aviso.id_for_label }}">{{ form.acepta_aviso.label }}
+        <a href="{% url 'aviso_privacidad' %}" target="_blank" rel="noopener">Leer el aviso de privacidad<span class="visualmente-oculto"> (se abre en una pestaña nueva)</span></a>
+      </label>
+    </div>
+    {% if form.acepta_aviso.errors %}
+      <div id="{{ form.acepta_aviso.auto_id }}_error">
+        {% for error in form.acepta_aviso.errors %}<p class="campo__error"><span class="icono-alerta" aria-hidden="true">!</span><span>{{ error }}</span></p>{% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <button type="submit" class="boton boton--primario boton--bloque">Crear cuenta</button>
+</form>
+{% endblock %}

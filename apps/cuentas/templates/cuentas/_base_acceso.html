@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block clase_main %}acceso{% endblock %}
+{% block contenido %}
+<aside class="panel-marca" aria-label="Sobre la plataforma">
+  <div class="panel-marca__contenido">
+    <h2>{% block panel_titulo %}Lo que se vende en el campus, en un solo lugar{% endblock %}</h2>
+    {% block panel_texto %}
+    <p>Una vitrina para los emprendimientos de la comunidad universitaria.</p>
+    <ul class="lista-marca">
+      <li><strong>Compradores:</strong> encuentra comida, artesanías, videojuegos y más, y contacta al vendedor.</li>
+      <li><strong>Emprendedores:</strong> muestra tu portafolio y organiza tu inventario y tus finanzas.</li>
+      <li>Solo para personas con correo institucional.</li>
+    </ul>
+    {% endblock %}
+  </div>
+</aside>
+<div class="acceso__formulario">
+  {% block formulario %}{% endblock %}
+</div>
+{% endblock %}

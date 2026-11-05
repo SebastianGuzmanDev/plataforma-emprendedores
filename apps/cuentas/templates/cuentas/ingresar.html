@@ -1,0 +1,18 @@
+{% extends "cuentas/_base_acceso.html" %}
+{% block titulo %}Iniciar sesión · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block formulario %}
+<h1 class="titulo-linea">Inicia sesión</h1>
+<p class="texto-secundario">¿Aún no tienes cuenta? <a href="{% url 'cuentas:registro' %}">Crea una con tu correo institucional</a></p>
+
+{% include "cuentas/_errores.html" %}
+
+<form class="formulario" method="post" action="{% url 'cuentas:ingresar' %}" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% include "cuentas/_campo.html" with campo=form.username %}
+  {% include "cuentas/_campo.html" with campo=form.password %}
+  <button type="submit" class="boton boton--primario boton--bloque">Iniciar sesión</button>
+</form>
+<p class="acciones"><a href="{% url 'cuentas:recuperar' %}">¿Olvidaste tu contraseña?</a></p>
+{% endblock %}

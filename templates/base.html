@@ -1,0 +1,60 @@
+{% load static %}<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ NOMBRE_PLATAFORMA }}{% endblock %} · Universidad Católica Luis Amigó</title>
+  <meta name="description" content="Plataforma donde los emprendedores de la Universidad Católica Luis Amigó muestran sus productos a la comunidad universitaria.">
+  <link rel="icon" href="{% static 'img/elemento-grafico.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/marca.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="encabezado">
+    <div class="contenedor encabezado__fila">
+      <div class="encabezado__marca">
+        <a class="encabezado__logo" href="{% url 'inicio' %}">
+          <img src="{% static 'img/logo-ucla.svg' %}" alt="Universidad Católica Luis Amigó" width="200" height="45">
+        </a>
+        <span class="encabezado__plataforma">{{ NOMBRE_PLATAFORMA }}</span>
+      </div>
+      <nav class="nav" aria-label="Cuenta">
+        {% if user.is_authenticated %}
+          <span class="insignia-rol"><span class="visualmente-oculto">Rol: </span>{{ user.get_rol_display }}</span>
+          <a href="{% url 'cuentas:mi_cuenta' %}">Mi cuenta</a>
+          <form method="post" action="{% url 'cuentas:salir' %}">
+            {% csrf_token %}
+            <button type="submit" class="boton boton--secundario boton--compacto">Cerrar sesión</button>
+          </form>
+        {% else %}
+          <a href="{% url 'cuentas:ingresar' %}">Iniciar sesión</a>
+          <a class="boton boton--primario boton--compacto" href="{% url 'cuentas:registro' %}">Crear cuenta</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="contenedor mensajes" role="status">
+      {% for mensaje in messages %}
+        <div class="aviso aviso--{% if mensaje.tags == 'success' %}exito{% elif mensaje.tags == 'error' %}error{% else %}info{% endif %}">
+          <p>{{ mensaje }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main id="contenido" class="{% block clase_main %}pagina{% endblock %}" tabindex="-1">
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor pie__fila">
+      <p>Proyecto académico · Ingeniería de Software · Universidad Católica Luis Amigó</p>
+      <a href="{% url 'aviso_privacidad' %}">Aviso de privacidad (Ley 1581 de 2012)</a>
+    </div>
+  </footer>
+</body>
+</html>

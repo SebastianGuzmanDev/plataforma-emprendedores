@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Acceso denegado · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <h1 class="titulo-linea">No tienes permiso para ver esta página</h1>
+  <p>Esta sección es solo para otro tipo de cuenta. Si crees que es un error, escríbenos a <a href="mailto:{{ CORREO_CONTACTO_PRIVACIDAD }}">{{ CORREO_CONTACTO_PRIVACIDAD }}</a>.</p>
+  <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:mi_cuenta' %}">Ir a mi cuenta</a></p>
+</div></div>
+{% endblock %}

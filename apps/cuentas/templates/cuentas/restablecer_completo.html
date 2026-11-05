@@ -1,0 +1,8 @@
+{% extends "cuentas/_base_acceso.html" %}
+{% block titulo %}Contraseña actualizada · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block formulario %}
+<h1 class="titulo-linea">Contraseña actualizada</h1>
+<div class="aviso aviso--exito" role="status"><p>Tu contraseña fue actualizada. Ya puedes iniciar sesión con ella.</p></div>
+<p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:ingresar' %}">Iniciar sesión</a></p>
+{% endblock %}
