@@ -2,6 +2,7 @@
 RNF-06 · Cumplimiento legal (Must): tratamiento de datos personales conforme a la
 Ley 1581 de 2012 (aviso de privacidad, consentimiento explícito y datos mínimos).
 """
+from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -68,7 +69,7 @@ class EvidenciaConsentimientoTests(TestCase):
         self.client.post(reverse("cuentas:registro"), datos_registro())
         usuario = Usuario.objects.get(correo_institucional=CORREO_COMPRADOR)
         self.assertTrue(usuario.aviso_privacidad_aceptado)
-        self.assertEqual(usuario.aviso_privacidad_version, "1.0")
+        self.assertEqual(usuario.aviso_privacidad_version, settings.AVISO_PRIVACIDAD_VERSION)
         self.assertGreaterEqual(usuario.aviso_privacidad_fecha, antes)
 
     def test_la_base_de_datos_impide_cuentas_sin_consentimiento(self):
