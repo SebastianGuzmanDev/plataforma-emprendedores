@@ -23,6 +23,7 @@
       <nav class="nav" aria-label="Cuenta">
         {% if user.is_authenticated %}
           <span class="insignia-rol"><span class="visualmente-oculto">Rol: </span>{{ user.get_rol_display }}</span>
+          {% if user.es_emprendedor %}<a href="{% url 'emprendimiento:panel' %}">Mi emprendimiento</a>{% endif %}
           <a href="{% url 'cuentas:mi_cuenta' %}">Mi cuenta</a>
           <form method="post" action="{% url 'cuentas:salir' %}">
             {% csrf_token %}

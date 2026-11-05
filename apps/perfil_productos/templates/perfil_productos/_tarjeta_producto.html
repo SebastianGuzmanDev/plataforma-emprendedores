@@ -1,0 +1,10 @@
+{% load portafolio %}
+{# Tarjeta de producto tal como la mostrará el catálogo (E3 la reutiliza). #}
+<article class="tarjeta-producto">
+  <img class="tarjeta-producto__foto" src="{{ producto.foto.url }}" alt="{{ producto.nombre }}" width="400" height="300" loading="lazy">
+  <div class="tarjeta-producto__cuerpo">
+    <h3 class="tarjeta-producto__nombre">{{ producto.nombre }}</h3>
+    <p class="tarjeta-producto__precio">{{ producto.precio_referencia|pesos }} <span class="texto-pequeno">precio de referencia</span></p>
+    {% include "perfil_productos/_estado.html" %}
+  </div>
+</article>

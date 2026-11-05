@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Desactivar producto · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="pagina__cuerpo">
+    <h1 class="titulo-linea">¿Desactivar «{{ producto.nombre }}»?</h1>
+    <div class="aviso aviso--error" role="note">
+      <span class="icono-alerta" aria-hidden="true">!</span>
+      <p>Dejará de aparecer en el catálogo. Esta acción no se puede deshacer: para volver a ofrecerlo tendrás que publicarlo de nuevo.</p>
+    </div>
+    <form method="post" class="acciones">
+      {% csrf_token %}
+      <button type="submit" class="boton boton--primario">Sí, desactivar</button>
+      <a class="boton boton--secundario" href="{% url 'emprendimiento:panel' %}">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}{% if producto %}Editar producto{% else %}Publicar producto{% endif %} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="pagina__cuerpo">
+    <h1 class="titulo-linea">{% if producto %}Editar «{{ producto.nombre }}»{% else %}Publica un producto{% endif %}</h1>
+    {% if not producto %}<p>Aparecerá en el catálogo con el estado <strong>Disponible</strong>.</p>{% endif %}
+
+    {% include "cuentas/_errores.html" %}
+
+    <form class="formulario formulario--separado" method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_campo.html" with campo=form.nombre %}
+      {% if producto %}
+        <figure class="foto-actual">
+          <img src="{{ producto.foto.url }}" alt="Foto actual de {{ producto.nombre }}" width="160" height="120">
+          <figcaption>Foto actual</figcaption>
+        </figure>
+      {% endif %}
+      {% include "cuentas/_campo.html" with campo=form.foto %}
+      {% include "cuentas/_campo.html" with campo=form.precio_referencia %}
+      <div class="acciones acciones--sin-margen">
+        <button type="submit" class="boton boton--primario">{% if producto %}Guardar cambios{% else %}Publicar producto{% endif %}</button>
+        <a class="boton boton--secundario" href="{% url 'emprendimiento:panel' %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

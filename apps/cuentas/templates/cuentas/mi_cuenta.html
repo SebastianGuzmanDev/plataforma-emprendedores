@@ -5,6 +5,11 @@
 <div class="contenedor">
   <div class="pagina__cuerpo">
     <h1 class="titulo-linea">Mi cuenta</h1>
+    {% if usuario.aviso_privacidad_version != AVISO_PRIVACIDAD_VERSION %}
+      <div class="aviso aviso--info" role="status">
+        <p>Actualizamos el aviso de privacidad (versión {{ AVISO_PRIVACIDAD_VERSION }}) para explicar cómo se publican los perfiles y productos en el catálogo. <a href="{% url 'aviso_privacidad' %}">Consúltalo aquí</a>.</p>
+      </div>
+    {% endif %}
     <dl class="datos">
       <div><dt>Correo institucional</dt><dd>{{ usuario.correo_institucional }}</dd></div>
       <div><dt>Rol</dt><dd>{{ usuario.get_rol_display }}</dd></div>
@@ -13,8 +18,8 @@
 
     {% if usuario.es_emprendedor %}
       <h2>Tu emprendimiento</h2>
-      <p>Desde tu panel crearás el perfil de tu emprendimiento y publicarás tus productos.</p>
-      <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:panel_emprendedor' %}">Ir al panel del emprendedor</a></p>
+      <p>Desde tu panel creas el perfil de tu emprendimiento y publicas y mantienes tus productos.</p>
+      <p class="acciones"><a class="boton boton--primario" href="{% url 'emprendimiento:panel' %}">Ir a mi emprendimiento</a></p>
     {% elif usuario.es_administrador %}
       <h2>Administración</h2>
       <p>Desde el panel de administración podrás desactivar cuentas o contenido que incumpla las reglas.</p>

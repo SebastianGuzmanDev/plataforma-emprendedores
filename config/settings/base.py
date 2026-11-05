@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # E1 · Cuentas y acceso
     "apps.cuentas",
+    # E2 · Perfil y productos
+    "apps.perfil_productos",
 ]
 
 MIDDLEWARE = [
@@ -104,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 DOMINIOS_INSTITUCIONALES = _lista_desde_entorno("DOMINIOS_INSTITUCIONALES", "amigo.edu.co")
 
 # RNF-06 (Ley 1581 de 2012): versión del aviso que acepta cada titular.
-AVISO_PRIVACIDAD_VERSION = "1.0"
+AVISO_PRIVACIDAD_VERSION = "1.1"  # 1.1 (E2): perfil y productos publicados en el catálogo
 CORREO_CONTACTO_PRIVACIDAD = os.environ.get(
     "CORREO_CONTACTO_PRIVACIDAD", "privacidad@por-definir.amigo.edu.co"
 )
@@ -135,6 +137,14 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# ---------------------------------------------------------------------------
+# E2 · Almacenamiento de fotos (D5: separado de la base de datos)
+# ---------------------------------------------------------------------------
+MEDIA_URL = "media/"
+MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / "media"))
+FOTO_LIMITE_MB = 5  # RF-06 · RN-07
+FOTO_LADO_MAXIMO_PX = 1600
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-responder@amigo.edu.co")

@@ -2,7 +2,7 @@
 
 **Proyecto:** Plataforma de Emprendedores (MVP) · Universidad Católica Luis Amigó
 **Fuentes:** Entregable 1 (épicas, RF, RNF, HU y criterios Given-When-Then), Entregable 2 (casos de uso CU-01 a CU-03, diagramas A1, S1 y S2, modelo de dominio, reglas RN-01 a RN-04, arquitectura y plan de pruebas) y *Manual de Identidad Visual* versión 02.
-**Estado:** entregada para revisión. No se ha iniciado la Épica 2.
+**Estado:** entregada. Los ajustes que hizo la Épica 2 sobre esta épica (panel del emprendedor y aviso de privacidad 1.1) están en [EPICA-2.md, sección 5](../epica-2/EPICA-2.md#5-cambios-sobre-la-épica-1).
 
 ---
 

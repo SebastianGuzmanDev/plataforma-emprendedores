@@ -742,3 +742,270 @@ p {
   white-space: nowrap;
   border: 0;
 }
+
+/* ================================================================== E2 · Perfil y productos */
+.texto-pequeno {
+  font-size: 0.85rem;
+}
+
+.acciones--sin-margen {
+  margin-top: 0;
+}
+
+.encabezado-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.encabezado-pagina h1 {
+  margin-bottom: 0;
+}
+
+.bloque {
+  margin-bottom: 2.25rem;
+}
+
+.bloque__encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.formulario--separado {
+  margin-top: 1.5rem;
+}
+
+.campo textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--color-borde);
+  border-radius: 0.4rem;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font: inherit;
+  resize: vertical;
+}
+
+.campo input[type="file"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 2px dashed var(--color-borde);
+  border-radius: 0.4rem;
+  font: inherit;
+}
+
+.campo--error textarea {
+  border-color: var(--color-texto);
+  border-left: 6px solid var(--color-acento);
+}
+
+/* Categorías como fichas seleccionables */
+.opciones-categoria {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.opcion-categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.9rem;
+  border: 2px solid var(--color-borde);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.opcion-categoria:has(input:checked) {
+  border-color: var(--color-primario);
+  box-shadow: inset 0 0 0 1px var(--color-primario);
+  font-weight: 700;
+}
+
+.opcion-categoria input {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  accent-color: var(--color-primario);
+}
+
+.grupo--error .opcion-categoria {
+  border-color: var(--color-texto);
+}
+
+/* Estados del producto (ES1) */
+.estado {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border: 2px solid var(--color-primario);
+  border-radius: 999px;
+  background: var(--color-fondo);
+  color: var(--color-primario);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.estado--agotado {
+  border-color: var(--color-acento);
+  background: var(--color-acento);
+  color: var(--color-texto);
+}
+
+.estado--desactivado {
+  border: 1px dashed var(--color-texto);
+  color: var(--color-texto);
+}
+
+.estado--categoria {
+  margin-bottom: 0.75rem;
+}
+
+/* Portafolio del emprendedor */
+.portafolio,
+.lista-simple,
+.rejilla-productos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portafolio {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item-producto {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 0.5rem;
+}
+
+.item-producto__foto {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+}
+
+.item-producto__datos p {
+  margin: 0 0 0.2rem;
+}
+
+.item-producto__nombre {
+  font-weight: 700;
+}
+
+.item-producto__acciones {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.item-producto__acciones form {
+  margin: 0;
+}
+
+@media (min-width: 48rem) {
+  .item-producto {
+    grid-template-columns: 88px 1fr auto;
+  }
+
+  .item-producto__acciones {
+    grid-column: auto;
+    justify-content: flex-end;
+  }
+}
+
+.lista-simple li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.foto-actual {
+  margin: 0;
+}
+
+.foto-actual img {
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  border: 1px solid var(--color-borde);
+}
+
+.foto-actual figcaption {
+  font-size: 0.9rem;
+}
+
+/* Vista previa y tarjeta de producto (la reutiliza el catálogo, E3) */
+.franja-previa {
+  margin-bottom: 1.5rem;
+}
+
+.perfil-publico {
+  max-width: 46rem;
+}
+
+.perfil-publico__descripcion {
+  font-size: 1.1rem;
+}
+
+.datos--compactos div {
+  padding-block: 0.6rem;
+}
+
+.seccion--compacta {
+  padding-block: 1rem 3rem;
+}
+
+.rejilla-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 1rem;
+}
+
+.tarjeta-producto {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-borde);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.tarjeta-producto__foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.tarjeta-producto__cuerpo {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.tarjeta-producto__nombre {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.tarjeta-producto__precio {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
