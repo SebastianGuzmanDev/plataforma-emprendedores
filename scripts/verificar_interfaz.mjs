@@ -1,0 +1,81 @@
+/**
+ * Verificación automática de la interfaz (RNF-03 y manual de identidad visual).
+ *
+ * Revisa, en cada página y en cada ancho (360, 768 y 1280 px):
+ *   1. que no haya desplazamiento horizontal (la página cabe en la pantalla);
+ *   2. que el logotipo institucional mida al menos 190 px de ancho (5 cm, pág. 10);
+ *   3. que todo control interactivo mida al menos 24 × 24 px (WCAG 2.5.8).
+ * Además guarda capturas en scripts/capturas/<navegador>/.
+ *
+ * Uso (con el servidor corriendo en otra terminal: python manage.py runserver):
+ *   npm install --no-save playwright@1.49.1 && npx playwright install
+ *   node scripts/verificar_interfaz.mjs                     # chromium
+ *   node scripts/verificar_interfaz.mjs firefox             # o webkit (motor de Safari)
+ *   BASE_URL=http://127.0.0.1:8000 node scripts/verificar_interfaz.mjs chromium
+ */
+import { mkdirSync } from "node:fs";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const playwright = require("playwright");
+
+const navegador = process.argv[2] || "chromium";
+const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:8000";
+const ANCHOS = [360, 768, 1280];
+const PAGINAS = [
+  ["inicio", "/"],
+  ["registro", "/cuentas/registro/"],
+  ["ingresar", "/cuentas/ingresar/"],
+  ["recuperar", "/cuentas/recuperar/"],
+  ["aviso-privacidad", "/privacidad/"],
+];
+const carpeta = new URL(`./capturas/${navegador}/`, import.meta.url);
+mkdirSync(carpeta, { recursive: true });
+
+const fallos = [];
+const browser = await playwright[navegador].launch();
+
+async function revisar(page, nombre, ancho) {
+  const r = await page.evaluate(() => {
+    const logo = document.querySelector(".encabezado__logo img");
+    const pequenos = [...document.querySelectorAll("a, button, input, select, textarea")]
+      .filter((el) => el.offsetParent !== null && !el.closest(".saltar"))
+      .map((el) => [el, el.getBoundingClientRect()])
+      .filter(([el, b]) => el.tagName !== "A" || el.closest("nav, .acciones") ? b.width < 24 || b.height < 24 : false)
+      .map(([el]) => el.outerHTML.slice(0, 80));
+    return {
+      desborde: document.documentElement.scrollWidth - window.innerWidth,
+      logo: logo ? logo.getBoundingClientRect().width : 0,
+      pequenos,
+    };
+  });
+  const id = `${nombre} @ ${ancho}px`;
+  if (r.desborde > 0) fallos.push(`${id}: desplazamiento horizontal de ${r.desborde}px`);
+  if (r.logo < 189) fallos.push(`${id}: logotipo de ${r.logo.toFixed(0)}px (< 190px)`);
+  r.pequenos.forEach((html) => fallos.push(`${id}: control menor a 24px → ${html}`));
+  console.log(`${r.desborde > 0 || r.logo < 189 || r.pequenos.length ? "✗" : "✓"} ${id}  (logo ${r.logo.toFixed(0)}px)`);
+}
+
+for (const ancho of ANCHOS) {
+  const page = await browser.newPage({ viewport: { width: ancho, height: 800 } });
+  for (const [nombre, ruta] of PAGINAS) {
+    await page.goto(BASE_URL + ruta);
+    await revisar(page, nombre, ancho);
+    await page.screenshot({ path: new URL(`${nombre}-${ancho}.png`, carpeta).pathname, fullPage: true });
+  }
+  // Estado con errores del registro (HU-01, escenarios 3 y 4)
+  await page.goto(BASE_URL + "/cuentas/registro/");
+  await page.fill("#id_correo_institucional", "ana@gmail.com");
+  await page.click("button[type=submit]");
+  await page.waitForLoadState();
+  await revisar(page, "registro-con-errores", ancho);
+  await page.screenshot({ path: new URL(`registro-errores-${ancho}.png`, carpeta).pathname, fullPage: true });
+  await page.close();
+}
+await browser.close();
+
+if (fallos.length) {
+  console.error(`\n${fallos.length} problema(s):\n- ${fallos.join("\n- ")}`);
+  process.exit(1);
+}
+console.log(`\nInterfaz verificada en ${navegador}: ${ANCHOS.length * (PAGINAS.length + 1)} vistas sin problemas.`);
