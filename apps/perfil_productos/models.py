@@ -106,14 +106,11 @@ class Producto(models.Model):
     def es_visible_en_catalogo(self):
         return self.estado in ESTADOS_VISIBLES_EN_CATALOGO
 
-    # ------------------------------------------------------------ Diagrama ES1
+    # ------------------------------------------------------------ Diagrama ES1 (con CC-02)
     def validar_edicion(self):
-        """ES1: la edición (p. ej. el precio) es una actividad del estado Disponible."""
-        if self.estado != EstadoProducto.DISPONIBLE:
-            raise TransicionNoPermitida(
-                f"Este producto está {self.get_estado_display().lower()}: "
-                "solo se pueden editar los productos disponibles."
-            )
+        """ES1 + CC-02: se editan los productos disponibles y los agotados; editar no cambia el estado."""
+        if self.estado == EstadoProducto.DESACTIVADO:
+            raise TransicionNoPermitida("Este producto está desactivado: no se puede editar.")
 
     def marcar_agotado(self):
         """ES1: Disponible → Agotado."""
@@ -123,8 +120,18 @@ class Producto(models.Model):
             )
         self.estado = EstadoProducto.AGOTADO
 
+    def marcar_disponible(self):
+        """CC-02: Agotado → Disponible. Desactivado sigue siendo definitivo (protege la moderación de HU-22)."""
+        if self.estado == EstadoProducto.DESACTIVADO:
+            raise TransicionNoPermitida(
+                "Un producto desactivado no se puede reactivar. Para volver a ofrecerlo, publícalo de nuevo."
+            )
+        if self.estado != EstadoProducto.AGOTADO:
+            raise TransicionNoPermitida("Este producto ya está disponible.")
+        self.estado = EstadoProducto.DISPONIBLE
+
     def desactivar(self):
-        """ES1: Disponible → Desactivado y Agotado → Desactivado. Sin reactivación."""
+        """ES1: Disponible → Desactivado y Agotado → Desactivado. Es definitivo."""
         if self.estado == EstadoProducto.DESACTIVADO:
             raise TransicionNoPermitida("Este producto ya está desactivado.")
         self.estado = EstadoProducto.DESACTIVADO

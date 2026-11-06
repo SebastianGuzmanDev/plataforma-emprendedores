@@ -113,6 +113,20 @@ def agotado(request, codigo):
 
 
 @solo_emprendedor
+@require_POST
+def disponible(request, codigo):
+    """CC-02: Agotado → Disponible."""
+    producto = _producto_propio(request, codigo)
+    try:
+        servicios.marcar_disponible(producto)
+    except TransicionNoPermitida as error:
+        messages.error(request, str(error))
+    else:
+        messages.success(request, f"«{producto.nombre}» volvió a estar disponible en el catálogo.")
+    return redirect("emprendimiento:panel")
+
+
+@solo_emprendedor
 @require_http_methods(["GET", "POST"])
 def desactivar(request, codigo):
     """HU-06 Esc. 3 · RF-08 · ES1: → Desactivado. Pide confirmación porque no se puede deshacer."""

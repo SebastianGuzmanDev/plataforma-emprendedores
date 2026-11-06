@@ -47,11 +47,16 @@
                 {% include "perfil_productos/_estado.html" %}
               </div>
               <div class="item-producto__acciones">
+                <a class="boton boton--secundario boton--compacto" href="{% url 'emprendimiento:editar' codigo=producto.codigo %}">Editar<span class="visualmente-oculto"> {{ producto.nombre }}</span></a>
                 {% if producto.estado == "DISPONIBLE" %}
-                  <a class="boton boton--secundario boton--compacto" href="{% url 'emprendimiento:editar' codigo=producto.codigo %}">Editar<span class="visualmente-oculto"> {{ producto.nombre }}</span></a>
                   <form method="post" action="{% url 'emprendimiento:agotado' codigo=producto.codigo %}">
                     {% csrf_token %}
                     <button type="submit" class="boton boton--secundario boton--compacto">Marcar agotado<span class="visualmente-oculto"> {{ producto.nombre }}</span></button>
+                  </form>
+                {% else %}
+                  <form method="post" action="{% url 'emprendimiento:disponible' codigo=producto.codigo %}">
+                    {% csrf_token %}
+                    <button type="submit" class="boton boton--secundario boton--compacto">Marcar disponible<span class="visualmente-oculto"> {{ producto.nombre }}</span></button>
                   </form>
                 {% endif %}
                 <a class="boton boton--secundario boton--compacto" href="{% url 'emprendimiento:desactivar' codigo=producto.codigo %}">Desactivar<span class="visualmente-oculto"> {{ producto.nombre }}</span></a>

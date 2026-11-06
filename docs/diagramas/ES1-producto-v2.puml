@@ -1,0 +1,45 @@
+@startuml ES1-producto-v2
+' ES1 · Estados de la entidad Producto — versión 2 (incluye CC-02, aprobado el 06/11/2026)
+' Reemplaza la figura 7 del Entregable 2. Renderizar con PlantUML: java -jar plantuml.jar ES1-producto-v2.puml
+title Diagrama de estados de la entidad Producto (v2, con CC-02)
+skinparam state {
+  BackgroundColor #DCEBF7
+  BorderColor #1F4E79
+}
+
+[*] --> Disponible : publicar producto\n[HU-05]
+
+state Disponible {
+}
+Disponible : visible en el catálogo
+Disponible : editar (por ejemplo, el precio) / el catálogo se actualiza [HU-06]
+
+state Agotado {
+}
+Agotado : visible en el catálogo con la etiqueta "Agotado"
+Agotado : editar / el catálogo se actualiza [CC-02]
+
+state Desactivado {
+}
+Desactivado : no aparece en el catálogo
+Desactivado : enlace directo: aviso de "no disponible" [HU-09]
+
+Disponible --> Agotado : marcar agotado [HU-06]\no salida que deja las existencias en 0 [HU-16]
+Agotado --> Disponible : marcar disponible [CC-02]
+Disponible --> Desactivado : desactivar [HU-06]\no desactivación del administrador [HU-22]
+Agotado --> Desactivado : desactivar [HU-06]\no desactivación del administrador [HU-22]
+
+note right of Desactivado
+  Estado definitivo: no se reactiva, para que el
+  dueño no pueda deshacer una desactivación del
+  administrador (HU-22). Para volver a ofrecer el
+  producto se publica de nuevo.
+  Al desactivar el administrador, se notifica al
+  dueño del producto [HU-22].
+end note
+
+note bottom of Agotado
+  Pendiente para E5 (punto B.2): si una entrada de
+  inventario debe volver a dejarlo Disponible.
+end note
+@enduml
