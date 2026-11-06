@@ -153,7 +153,7 @@ El Entregable 2 dejó la tecnología para el Sprint 1 (S-9). Estas son las decis
 | S-E1-4 | Vigencia del enlace de recuperación | 1 hora y un solo uso |
 | S-E1-5 | Duración de la sesión | 12 horas |
 | S-E1-6 | Tipografías corporativas | Son licenciadas; no se incluyen archivos de fuente. Si la universidad provee la licencia web, se agregan con `@font-face` sin cambiar el resto |
-| S-E1-7 | Nombre del producto | "Plataforma de Emprendedores" como nombre descriptivo provisional, configurable en `NOMBRE_PLATAFORMA` |
+| S-E1-7 | Nombre del producto | "Plataforma de Emprendedores" como nombre descriptivo provisional, configurable en `NOMBRE_PLATAFORMA`. **Resuelto por CC-04: "Emprendi Amigos"** |
 
 ### 5.1 Puntos que necesitan validación del equipo
 
