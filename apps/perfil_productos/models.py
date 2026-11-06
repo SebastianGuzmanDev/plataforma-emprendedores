@@ -50,6 +50,8 @@ class Emprendimiento(models.Model):
     propietario = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="emprendimiento"
     )
+    # CC-03: nombre con el que los compradores reconocen el emprendimiento.
+    nombre = models.CharField("nombre", max_length=80)
     # S-1: la categoría pertenece al emprendimiento y clasifica a todos sus productos.
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name="emprendimientos")
     descripcion = models.TextField("descripción", max_length=500)
@@ -62,7 +64,7 @@ class Emprendimiento(models.Model):
         verbose_name = "emprendimiento"
 
     def __str__(self):
-        return f"Emprendimiento de {self.propietario}"
+        return self.nombre
 
 
 class ProductoQuerySet(models.QuerySet):

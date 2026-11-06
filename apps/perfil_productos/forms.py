@@ -8,7 +8,7 @@ MENSAJE_PRECIO = "Escribe el precio solo con números, sin signos negativos ni l
 
 
 class PerfilForm(forms.ModelForm):
-    """HU-04 · RF-05 · RN-06: los cuatro campos son obligatorios."""
+    """HU-04 · RF-05 · RN-06: todos los campos son obligatorios (el nombre lo agrega CC-03)."""
 
     categoria = forms.ModelChoiceField(
         label="Categoría",
@@ -23,23 +23,30 @@ class PerfilForm(forms.ModelForm):
 
     class Meta:
         model = Emprendimiento
-        fields = ["descripcion", "categoria", "horarios", "zona_entrega"]
+        fields = ["nombre", "descripcion", "categoria", "horarios", "zona_entrega"]
         labels = {
+            "nombre": "Nombre del emprendimiento",
             "descripcion": "Descripción",
             "horarios": "Horarios de atención",
             "zona_entrega": "Zona de entrega",
         }
         help_texts = {
+            "nombre": "Así te reconocerán los compradores. Por ejemplo: Arepas Doña Rosa.",
             "descripcion": "Cuenta qué vendes y qué hace especial a tu emprendimiento (máximo 500 caracteres).",
             "horarios": "Por ejemplo: lunes a viernes, 10:00 a 14:00.",
             "zona_entrega": "Dónde entregas dentro del campus. Por ejemplo: bloque 3, frente a la cafetería.",
         }
         widgets = {
+            "nombre": forms.TextInput(attrs={"maxlength": 80}),
             "descripcion": forms.Textarea(attrs={"rows": 4, "maxlength": 500}),
             "horarios": forms.TextInput(attrs={"maxlength": 120}),
             "zona_entrega": forms.TextInput(attrs={"maxlength": 120}),
         }
         error_messages = {
+            "nombre": {
+                "required": "Escribe el nombre de tu emprendimiento.",
+                "max_length": "El nombre puede tener hasta 80 caracteres (tiene %(show_value)d).",
+            },
             "descripcion": {
                 "required": "Escribe la descripción de tu emprendimiento.",
                 "max_length": "La descripción puede tener hasta 500 caracteres (tiene %(show_value)d).",

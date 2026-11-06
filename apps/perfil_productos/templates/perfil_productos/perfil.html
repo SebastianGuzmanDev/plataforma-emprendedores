@@ -14,6 +14,7 @@
 
     <form class="formulario formulario--separado" method="post" novalidate>
       {% csrf_token %}
+      {% include "cuentas/_campo.html" with campo=form.nombre %}
       {% include "cuentas/_campo.html" with campo=form.descripcion %}
 
       <fieldset class="grupo{% if form.categoria.errors %} grupo--error{% endif %}" {% if form.categoria.errors %}aria-describedby="{{ form.categoria.auto_id }}_error"{% endif %}>

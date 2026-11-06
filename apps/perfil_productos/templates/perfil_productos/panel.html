@@ -27,6 +27,7 @@
         <a href="{% url 'emprendimiento:perfil' %}">Editar perfil</a>
       </div>
       <dl class="datos">
+        <div><dt>Nombre</dt><dd>{{ emprendimiento.nombre }}</dd></div>
         <div><dt>Categoría</dt><dd>{{ emprendimiento.categoria }}</dd></div>
         <div><dt>Descripción</dt><dd>{{ emprendimiento.descripcion|linebreaksbr }}</dd></div>
         <div><dt>Horarios</dt><dd>{{ emprendimiento.horarios }}</dd></div>

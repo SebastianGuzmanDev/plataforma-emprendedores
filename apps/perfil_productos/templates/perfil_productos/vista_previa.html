@@ -9,7 +9,7 @@
 
   <section class="perfil-publico" aria-labelledby="titulo-emprendimiento">
     <span class="estado estado--categoria">{{ emprendimiento.categoria }}</span>
-    <h1 id="titulo-emprendimiento" class="titulo-linea">Emprendimiento de {{ emprendimiento.categoria|lower }}</h1>
+    <h1 id="titulo-emprendimiento" class="titulo-linea">{{ emprendimiento.nombre }}</h1>
     <p class="perfil-publico__descripcion">{{ emprendimiento.descripcion|linebreaksbr }}</p>
     <dl class="datos datos--compactos">
       <div><dt>Horarios</dt><dd>{{ emprendimiento.horarios }}</dd></div>

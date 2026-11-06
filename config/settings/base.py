@@ -106,7 +106,8 @@ AUTH_PASSWORD_VALIDATORS = [
 DOMINIOS_INSTITUCIONALES = _lista_desde_entorno("DOMINIOS_INSTITUCIONALES", "amigo.edu.co")
 
 # RNF-06 (Ley 1581 de 2012): versión del aviso que acepta cada titular.
-AVISO_PRIVACIDAD_VERSION = "1.1"  # 1.1 (E2): perfil y productos publicados en el catálogo
+# 1.1 (E2): perfil y productos publicados en el catálogo · 1.2 (CC-03): nombre del emprendimiento
+AVISO_PRIVACIDAD_VERSION = "1.2"
 CORREO_CONTACTO_PRIVACIDAD = os.environ.get(
     "CORREO_CONTACTO_PRIVACIDAD", "privacidad@por-definir.amigo.edu.co"
 )
