@@ -1,4 +1,4 @@
-# Plataforma de Emprendedores · Universidad Católica Luis Amigó
+# Emprendi Amigos · Universidad Católica Luis Amigó
 
 MVP web donde los emprendedores de la comunidad universitaria publican su portafolio y llevan el control de su inventario y sus finanzas, y donde compradores (estudiantes, docentes, personal administrativo y directivos) encuentran lo que se vende en el campus.
 
@@ -46,7 +46,7 @@ python manage.py promover_administrador correo@amigo.edu.co
 python manage.py test -v 2
 ```
 
-Resultado esperado: `Ran 155 tests` y `OK` (88 de E1 y 67 de E2). Las baterías completas (automáticas y manuales) con sus criterios de aprobación están en [docs/epica-1/EPICA-1.md](docs/epica-1/EPICA-1.md#6-batería-de-pruebas-de-validación) y [docs/epica-2/EPICA-2.md](docs/epica-2/EPICA-2.md#7-batería-de-pruebas-de-validación).
+Resultado esperado: `Ran 164 tests` y `OK` (90 de E1 y 74 de E2). Las baterías completas (automáticas y manuales) con sus criterios de aprobación están en [docs/epica-1/EPICA-1.md](docs/epica-1/EPICA-1.md#6-batería-de-pruebas-de-validación) y [docs/epica-2/EPICA-2.md](docs/epica-2/EPICA-2.md#7-batería-de-pruebas-de-validación).
 
 Verificación de la configuración de producción (RNF-04):
 
@@ -64,6 +64,8 @@ node scripts/verificar_interfaz.mjs chromium   # también: firefox, webkit
 ```
 
 Para incluir las pantallas del emprendedor, define `EMPRENDEDOR_CORREO` y `EMPRENDEDOR_CONTRASENA` de una cuenta emprendedora con perfil.
+
+Los cambios aprobados sobre los Entregables se registran en [docs/registro-de-cambios.md](docs/registro-de-cambios.md).
 
 ## Estructura
 

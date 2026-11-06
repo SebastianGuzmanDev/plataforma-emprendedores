@@ -113,6 +113,25 @@ class PaginasAccesiblesTests(TestCase):
         self.assertRegex(html, r'<img[^>]+src="[^"]*img/logo-ucla\.svg"[^>]+alt="Universidad Católica Luis Amigó"')
 
 
+class NombrePlataformaTests(TestCase):
+    """CC-04: la plataforma se llama «Emprendi Amigos»."""
+
+    def test_el_encabezado_y_el_titulo_muestran_el_nombre_de_la_plataforma(self):
+        html = self.client.get(reverse("inicio")).content.decode()
+        self.assertIn('<span class="encabezado__plataforma">Emprendi Amigos</span>', html)
+        self.assertRegex(html, r"<title>[^<]*Emprendi Amigos[^<]*</title>")
+        self.assertNotIn("Plataforma de Emprendedores", html)
+
+    def test_el_correo_de_recuperacion_usa_el_nombre_de_la_plataforma(self):
+        from django.core import mail
+
+        crear_usuario()
+        self.client.post(reverse("cuentas:recuperar"), {"email": CORREO_COMPRADOR})
+        self.assertIn("Emprendi Amigos", mail.outbox[0].subject)
+        self.assertIn("Emprendi Amigos", mail.outbox[0].body)
+        self.assertNotIn("Plataforma de Emprendedores", mail.outbox[0].body)
+
+
 class IdentidadVisualTests(SimpleTestCase):
     def test_los_tokens_de_color_son_los_del_manual(self):
         tokens = tokens_css()

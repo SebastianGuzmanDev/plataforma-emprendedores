@@ -104,7 +104,7 @@ class PrivacidadE2Tests(TestCase):
         for nombre in ["panel", "perfil", "publicar", "vista_previa"]:
             with self.subTest(pantalla=nombre):
                 self.assertEqual(self.client.get(reverse(f"emprendimiento:{nombre}")).status_code, 403)
-        for nombre in ["editar", "agotado", "desactivar"]:
+        for nombre in ["editar", "agotado", "disponible", "desactivar"]:
             with self.subTest(pantalla=nombre):
                 destino = reverse(f"emprendimiento:{nombre}", kwargs={"codigo": producto.codigo})
                 self.assertEqual(self.client.post(destino).status_code, 403)
@@ -118,18 +118,23 @@ class PrivacidadE2Tests(TestCase):
 
 
 class LegalE2Tests(TestCase):
-    CAMPOS_EMPRENDIMIENTO = {"id", "propietario", "categoria", "descripcion", "horarios", "zona_entrega"}
+    CAMPOS_EMPRENDIMIENTO = {"id", "propietario", "nombre", "categoria", "descripcion", "horarios", "zona_entrega"}
     CAMPOS_PRODUCTO = {"id", "codigo", "emprendimiento", "nombre", "foto", "precio_referencia", "estado"}
 
     def test_rnf06_el_perfil_y_el_producto_solo_guardan_los_datos_previstos(self):
-        """RF-05 y RF-06 y el modelo de dominio; existencias y umbral llegan con E5."""
+        """RF-05 (con el nombre de CC-03), RF-06 y el modelo de dominio; existencias y umbral llegan con E5."""
         self.assertEqual({c.name for c in Emprendimiento._meta.concrete_fields}, self.CAMPOS_EMPRENDIMIENTO)
         self.assertEqual({c.name for c in Producto._meta.concrete_fields}, self.CAMPOS_PRODUCTO)
 
     def test_rnf06_el_aviso_informa_la_publicacion_en_el_catalogo(self):
-        self.assertEqual(settings.AVISO_PRIVACIDAD_VERSION, "1.1")
+        self.assertEqual(settings.AVISO_PRIVACIDAD_VERSION, "1.2")
         respuesta = self.client.get(reverse("aviso_privacidad"))
-        for texto in ["Versión 1.1", "perfil de tu emprendimiento", "se publican en el catálogo", "ubicación GPS"]:
+        for texto in [
+            "Versión 1.2",
+            "perfil de tu emprendimiento: nombre, descripción, categoría",
+            "se publican en el catálogo",
+            "ubicación GPS",
+        ]:
             with self.subTest(texto=texto):
                 self.assertContains(respuesta, texto)
 
@@ -154,7 +159,7 @@ class EscalabilidadE2Tests(TestCase):
                 rol=Rol.EMPRENDEDOR if i < 30 else Rol.COMPRADOR,
                 password=hash_comun,
                 aviso_privacidad_aceptado=True,
-                aviso_privacidad_version="1.1",
+                aviso_privacidad_version="1.2",
                 aviso_privacidad_fecha=ahora,
             )
             for i in range(100)
@@ -163,6 +168,7 @@ class EscalabilidadE2Tests(TestCase):
         emprendimientos = Emprendimiento.objects.bulk_create(
             Emprendimiento(
                 propietario=usuario,
+                nombre=f"Emprendimiento {i}",
                 categoria=categorias[i % len(categorias)],
                 descripcion=f"Emprendimiento {i}",
                 horarios="Lunes a viernes",

@@ -14,5 +14,7 @@ urlpatterns = [
     # HU-06 · RF-07, RF-08
     path("productos/<uuid:codigo>/editar/", views.editar, name="editar"),
     path("productos/<uuid:codigo>/agotado/", views.agotado, name="agotado"),
+    # CC-02 · reactivación de un producto agotado
+    path("productos/<uuid:codigo>/disponible/", views.disponible, name="disponible"),
     path("productos/<uuid:codigo>/desactivar/", views.desactivar, name="desactivar"),
 ]

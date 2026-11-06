@@ -3,6 +3,7 @@ Vistas del módulo E1 · Cuentas y acceso (capa de presentación).
 
 CU-01 registro · CU-02 inicio y cierre de sesión · CU-03 recuperación de contraseña.
 """
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
@@ -88,6 +89,11 @@ class RecuperarView(auth_views.PasswordResetView):
     email_template_name = "cuentas/correo/recuperar.txt"
     subject_template_name = "cuentas/correo/recuperar_asunto.txt"
     success_url = reverse_lazy("cuentas:recuperar_enviado")
+
+    def form_valid(self, form):
+        # Los correos no pasan por los procesadores de contexto: se envía el nombre explícitamente.
+        self.extra_email_context = {"NOMBRE_PLATAFORMA": settings.NOMBRE_PLATAFORMA}
+        return super().form_valid(form)
 
 
 class RecuperarEnviadoView(auth_views.PasswordResetDoneView):

@@ -73,6 +73,13 @@ def marcar_agotado(producto):
     return producto
 
 
+def marcar_disponible(producto):
+    """CC-02 · Agotado → Disponible."""
+    producto.marcar_disponible()
+    producto.save(update_fields=["estado"])
+    return producto
+
+
 def desactivar_producto(producto):
     """CU-06 · ES1: Disponible o Agotado → Desactivado."""
     producto.desactivar()

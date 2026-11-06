@@ -92,7 +92,7 @@ class ProcesamientoFotoTests(SimpleTestCase):
 
 
 class DiagramaEstadosProductoTests(TestCase):
-    """ES1: Disponible → Agotado → Desactivado; Disponible → Desactivado. Sin reactivación."""
+    """ES1 con CC-02: Disponible ⇄ Agotado; ambos → Desactivado, que es definitivo."""
 
     def setUp(self):
         self.producto = crear_producto(crear_perfil(crear_emprendedor()))
@@ -114,17 +114,36 @@ class DiagramaEstadosProductoTests(TestCase):
 
     def test_es1_desactivado_no_tiene_transiciones_de_salida(self):
         self.producto.desactivar()
-        for accion in (self.producto.marcar_agotado, self.producto.desactivar, self.producto.validar_edicion):
+        for accion in (
+            self.producto.marcar_agotado,
+            self.producto.marcar_disponible,
+            self.producto.desactivar,
+            self.producto.validar_edicion,
+        ):
             with self.subTest(accion=accion.__name__):
                 with self.assertRaises(TransicionNoPermitida):
                     accion()
 
-    def test_es1_agotado_no_vuelve_a_disponible_ni_se_edita(self):
+    def test_cc02_agotado_vuelve_a_disponible(self):
+        self.producto.marcar_agotado()
+        self.producto.marcar_disponible()
+        self.assertEqual(self.producto.estado, EstadoProducto.DISPONIBLE)
+
+    def test_cc02_un_producto_disponible_no_se_marca_disponible_otra_vez(self):
+        with self.assertRaisesMessage(TransicionNoPermitida, "ya está disponible"):
+            self.producto.marcar_disponible()
+
+    def test_cc02_un_producto_agotado_no_se_vuelve_a_agotar(self):
         self.producto.marcar_agotado()
         with self.assertRaises(TransicionNoPermitida):
             self.producto.marcar_agotado()
-        with self.assertRaises(TransicionNoPermitida):
-            self.producto.validar_edicion()
 
-    def test_es1_solo_un_producto_disponible_se_edita(self):
-        self.producto.validar_edicion()  # no lanza
+    def test_cc02_disponibles_y_agotados_se_pueden_editar(self):
+        self.producto.validar_edicion()  # Disponible: no lanza
+        self.producto.marcar_agotado()
+        self.producto.validar_edicion()  # Agotado: no lanza
+
+    def test_cc02_un_desactivado_no_se_reactiva(self):
+        self.producto.desactivar()
+        with self.assertRaisesMessage(TransicionNoPermitida, "no se puede reactivar"):
+            self.producto.marcar_disponible()

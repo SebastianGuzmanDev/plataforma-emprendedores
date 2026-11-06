@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Utilidad de línea de comandos de Django para la Plataforma de Emprendedores."""
+"""Utilidad de línea de comandos de Django para Emprendi Amigos."""
 import os
 import sys
 
