@@ -101,21 +101,42 @@ class HU06MantenerProductoTests(MediaTemporalMixin, TestCase):
         self.producto.refresh_from_db()
         self.assertEqual(self.producto.estado, EstadoProducto.DESACTIVADO)
 
-    def test_es1_transiciones_no_permitidas_se_informan_sin_cambiar_el_estado(self):
-        """ES1: un producto agotado no se edita ni vuelve a agotarse; uno desactivado no cambia más."""
+    def test_cp_06_6_un_producto_agotado_vuelve_a_estar_disponible(self):
+        """CP-06.6 · CC-02: Agotado → Disponible; el catálogo vuelve a mostrar «Disponible»."""
         self.client.post(url("agotado", self.producto))
-        editar = self.client.post(
-            url("editar", self.producto), {"nombre": "Otro", "precio_referencia": "1"}, follow=True
-        )
-        self.assertContains(editar, "solo se pueden editar los productos disponibles")
+        respuesta = self.client.post(url("disponible", self.producto), follow=True)
+        self.assertRedirects(respuesta, URL_PANEL)
+        self.assertContains(respuesta, "«Arepa de queso» volvió a estar disponible")
+        self.assertEqual(Producto.objects.visibles_en_catalogo().get().estado, EstadoProducto.DISPONIBLE)
+        vista = self.client.get(URL_VISTA_PREVIA)
+        self.assertContains(vista, "Disponible")
+        self.assertNotContains(vista, ">Agotado<")
+
+    def test_cp_06_7_un_producto_agotado_se_edita_y_sigue_agotado(self):
+        """CP-06.7 · CC-02: editar no cambia el estado."""
+        self.client.post(url("agotado", self.producto))
+        self.client.post(url("editar", self.producto), {"nombre": "Arepa de queso", "precio_referencia": "6000"})
+        self.producto.refresh_from_db()
+        self.assertEqual((self.producto.precio_referencia, self.producto.estado), (6000, EstadoProducto.AGOTADO))
+
+    def test_es1_transiciones_no_permitidas_se_informan_sin_cambiar_el_estado(self):
+        """ES1 + CC-02: un producto desactivado no se edita, no se agota y no se reactiva."""
         self.client.post(url("desactivar", self.producto))
-        agotar = self.client.post(url("agotado", self.producto), follow=True)
-        self.assertContains(agotar, "No se puede marcar como agotado un producto desactivado")
+        for accion, datos, mensaje in [
+            ("editar", {"nombre": "Otro", "precio_referencia": "1"}, "no se puede editar"),
+            ("agotado", {}, "No se puede marcar como agotado un producto desactivado"),
+            ("disponible", {}, "no se puede reactivar"),
+        ]:
+            with self.subTest(accion=accion):
+                self.assertContains(self.client.post(url(accion, self.producto), datos, follow=True), mensaje)
+        disponible = self.client.post(url("disponible", crear_producto(self.producto.emprendimiento)), follow=True)
+        self.assertContains(disponible, "ya está disponible")
         self.producto.refresh_from_db()
         self.assertEqual((self.producto.nombre, self.producto.estado), ("Arepa de queso", EstadoProducto.DESACTIVADO))
 
     def test_los_cambios_de_estado_solo_se_aceptan_por_post(self):
         self.assertEqual(self.client.get(url("agotado", self.producto)).status_code, 405)
+        self.assertEqual(self.client.get(url("disponible", self.producto)).status_code, 405)
         self.producto.refresh_from_db()
         self.assertEqual(self.producto.estado, EstadoProducto.DISPONIBLE)
 
@@ -129,9 +150,12 @@ class HU06MantenerProductoTests(MediaTemporalMixin, TestCase):
         html = self.client.get(URL_PANEL).content.decode()
         self.assertIn(url("editar", self.producto), html)
         self.assertIn(url("agotado", self.producto), html)
-        self.assertNotIn(url("editar", agotado), html)
+        self.assertNotIn(url("disponible", self.producto), html)
+        self.assertIn(url("editar", agotado), html)
+        self.assertIn(url("disponible", agotado), html)
+        self.assertNotIn(url("agotado", agotado), html)
         self.assertIn(url("desactivar", agotado), html)
-        for accion in ("editar", "agotado", "desactivar"):
+        for accion in ("editar", "agotado", "disponible", "desactivar"):
             self.assertNotIn(url(accion, desactivado), html)
 
 
@@ -148,6 +172,7 @@ class HU06ProductoAjenoTests(MediaTemporalMixin, TestCase):
             ("editar", "get", None),
             ("editar", "post", {"nombre": "Hackeado", "precio_referencia": "1"}),
             ("agotado", "post", None),
+            ("disponible", "post", None),
             ("desactivar", "get", None),
             ("desactivar", "post", None),
         ]:

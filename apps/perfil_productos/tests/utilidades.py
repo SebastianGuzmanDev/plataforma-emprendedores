@@ -62,6 +62,7 @@ def crear_emprendedor(correo=CORREO_EMPRENDEDOR_A):
 
 def crear_perfil(usuario, categoria="Comida", **cambios):
     datos = {
+        "nombre": "Arepas Doña Rosa",
         "descripcion": "Arepas rellenas hechas en casa.",
         "horarios": "Lunes a viernes, 10:00 a 14:00",
         "zona_entrega": "Bloque 3, frente a la cafetería",

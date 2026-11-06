@@ -16,6 +16,7 @@ URL_VISTA_PREVIA = reverse("emprendimiento:vista_previa")
 
 def datos_perfil(**cambios):
     datos = {
+        "nombre": "Arepas Doña Rosa",
         "descripcion": "Arepas rellenas hechas en casa con ingredientes frescos.",
         "categoria": str(Categoria.objects.get(nombre="Comida").pk),
         "horarios": "Lunes a viernes, 10:00 a 14:00",
@@ -42,7 +43,7 @@ class HU04PerfilTests(TestCase):
         entrar(self.client, CORREO_EMPRENDEDOR_A)
 
     def test_cp_04_1_perfil_valido_se_crea_y_queda_visible_en_el_catalogo(self):
-        """CP-04.1 · Esc. 1: descripción, categoría, horarios y zona completos → perfil creado y visible."""
+        """CP-04.1 · Esc. 1: nombre (CC-03), descripción, categoría, horarios y zona → perfil creado y visible."""
         respuesta = self.client.post(URL_PERFIL, datos_perfil(), follow=True)
         self.assertRedirects(respuesta, URL_PANEL)
         self.assertContains(respuesta, "El perfil de tu emprendimiento quedó publicado")
@@ -51,12 +52,13 @@ class HU04PerfilTests(TestCase):
         # Fuente de datos del catálogo (E3) y vista previa de lo que ven los compradores.
         self.assertIn(perfil, Emprendimiento.objects.visibles_en_catalogo())
         vista = self.client.get(URL_VISTA_PREVIA)
-        for texto in ["Arepas rellenas hechas en casa", "Comida", "Lunes a viernes, 10:00 a 14:00", "Bloque 3"]:
+        for texto in ["Arepas Doña Rosa", "Arepas rellenas hechas en casa", "Comida", "Lunes a viernes, 10:00 a 14:00", "Bloque 3"]:
             self.assertContains(vista, texto)
 
     def test_cp_04_2_campo_obligatorio_vacio_rechaza_y_senala_el_campo(self):
         """CP-04.2 · Esc. 2: un campo obligatorio vacío → se rechaza el envío y se señala el campo."""
         mensajes = {
+            "nombre": "Escribe el nombre de tu emprendimiento.",
             "descripcion": "Escribe la descripción de tu emprendimiento.",
             "categoria": "Elige la categoría de tu emprendimiento.",
             "horarios": "Indica tus horarios de atención.",
@@ -79,6 +81,7 @@ class HU04PerfilTests(TestCase):
         """CP-04.3 · Esc. 3: con un perfil creado, al modificar y guardar se muestra lo actualizado."""
         crear_perfil(self.emprendedor)
         nuevos = datos_perfil(
+            nombre="Tejidos Juana",
             categoria=str(Categoria.objects.get(nombre="Artesanías").pk),
             descripcion="Pulseras tejidas a mano.",
             horarios="Martes y jueves, 8:00 a 12:00",
@@ -91,9 +94,22 @@ class HU04PerfilTests(TestCase):
         perfil = Emprendimiento.objects.visibles_en_catalogo().get()
         self.assertEqual(perfil.categoria.nombre, "Artesanías")
         vista = self.client.get(URL_VISTA_PREVIA)
+        self.assertContains(vista, "Tejidos Juana")
         self.assertContains(vista, "Pulseras tejidas a mano.")
         self.assertContains(vista, "Martes y jueves, 8:00 a 12:00")
         self.assertNotContains(vista, "Arepas rellenas")
+
+    def test_cc03_la_vista_previa_y_el_panel_se_titulan_con_el_nombre_del_emprendimiento(self):
+        crear_perfil(self.emprendedor, nombre="Arepas Doña Rosa")
+        vista = self.client.get(URL_VISTA_PREVIA).content.decode()
+        self.assertRegex(vista, r'<h1 id="titulo-emprendimiento"[^>]*>Arepas Doña Rosa</h1>')
+        self.assertNotIn("Emprendimiento de comida", vista)
+        self.assertContains(self.client.get(URL_PANEL), "Arepas Doña Rosa")
+
+    def test_cc03_el_nombre_tiene_un_limite_de_80_caracteres(self):
+        respuesta = self.client.post(URL_PERFIL, datos_perfil(nombre="a" * 81))
+        self.assertContains(respuesta, "El nombre puede tener hasta 80 caracteres")
+        self.assertFalse(Emprendimiento.objects.exists())
 
     def test_un_emprendedor_tiene_como_maximo_un_perfil(self):
         """Supuesto S-2 del Entregable 2 (multiplicidad 0..1)."""
