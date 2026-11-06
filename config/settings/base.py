@@ -1,5 +1,5 @@
 """
-Configuración común de la Plataforma de Emprendedores (MVP).
+Configuración común de Emprendi Amigos (MVP).
 
 Arquitectura (Entregable 2, sección 2.2): una sola aplicación web modular con
 tres capas y un módulo de lógica por épica. Este archivo reúne lo que comparten
@@ -115,7 +115,7 @@ CORREO_CONTACTO_PRIVACIDAD = os.environ.get(
 # RF-04 / HU-03: el enlace de recuperación vence en 1 hora.
 PASSWORD_RESET_TIMEOUT = 60 * 60
 
-NOMBRE_PLATAFORMA = "Plataforma de Emprendedores"
+NOMBRE_PLATAFORMA = "Emprendi Amigos"  # CC-04
 
 # ---------------------------------------------------------------------------
 # Sesión y cookies (RNF-04)

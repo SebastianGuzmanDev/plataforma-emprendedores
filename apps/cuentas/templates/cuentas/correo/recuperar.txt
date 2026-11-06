@@ -1,6 +1,6 @@
 {% autoescape off %}Hola:
 
-Recibimos una solicitud para restablecer la contraseña de la cuenta {{ email }} en la Plataforma de Emprendedores de la Universidad Católica Luis Amigó.
+Recibimos una solicitud para restablecer la contraseña de la cuenta {{ email }} en {{ NOMBRE_PLATAFORMA }}, la plataforma de emprendedores de la Universidad Católica Luis Amigó.
 
 Abre este enlace para elegir una contraseña nueva. Vence en 1 hora y solo funciona una vez:
 
@@ -8,5 +8,5 @@ Abre este enlace para elegir una contraseña nueva. Vence en 1 hora y solo funci
 
 Si no pediste este cambio, ignora este mensaje: tu contraseña actual sigue funcionando.
 
-Plataforma de Emprendedores · Universidad Católica Luis Amigó
+{{ NOMBRE_PLATAFORMA }} · Universidad Católica Luis Amigó
 {% endautoescape %}

@@ -1,1 +1,1 @@
-Restablece tu contraseña · Plataforma de Emprendedores
+Restablece tu contraseña · {{ NOMBRE_PLATAFORMA }}
