@@ -15,6 +15,10 @@ class ContactoNoPermitido(Exception):
     """RN-18: el producto es del propio usuario."""
 
 
+class CuentaDesactivada(Exception):
+    """RN-19 (E7): la otra persona perdió el acceso; no podría leer ni responder."""
+
+
 class MensajeVacio(Exception):
     """RN-16: no se envía un mensaje vacío."""
 
@@ -33,6 +37,8 @@ def enviar_mensaje(conversacion, autor, contenido):
     """S5 · enviarMensaje(conversacion, contenido): guarda el mensaje con leido = falso."""
     if not conversacion.participa(autor):
         raise PermissionDenied
+    if not conversacion.otra_persona(autor).activo:
+        raise CuentaDesactivada
     texto = limpiar_mensaje(contenido)
     if texto is None:
         raise MensajeVacio

@@ -26,6 +26,10 @@
           <p class="texto-pequeno">Para contactar al emprendedor debes iniciar sesión.</p>
         {% endif %}
         <p class="texto-pequeno">La plataforma no procesa pagos: el precio y la entrega se acuerdan con el emprendedor.</p>
+        {% if user.es_administrador %}
+          {# HU-22: el administrador puede desactivar el producto desde aquí #}
+          <p><a class="boton boton--secundario" href="{% url 'administracion:desactivar_producto' codigo=producto.codigo %}">Desactivar por incumplir las reglas</a></p>
+        {% endif %}
       </div>
 
       <section class="detalle-producto__emprendimiento" aria-labelledby="titulo-emprendimiento">

@@ -10,7 +10,7 @@
   - Decisión D4, valores límite de 4.1.4, Anexo A (CP-19.1 a CP-21.3) y punto abierto B.2.
 - *Manual de Identidad Visual*, versión 02.
 
-**Estado:** entregada para revisión. No se ha iniciado la Épica 7.
+**Estado:** **aprobada** (07/11/2026), con CC-10.
 
 ---
 

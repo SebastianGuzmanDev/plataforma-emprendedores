@@ -14,7 +14,10 @@ Proceso de la sección 4.2.2 del Entregable 2: registrar, evaluar el impacto, de
 | CC-07 | 07/11/2026 | Confirmar el punto B.2: cualquier cuenta que no sea la dueña del producto puede contactar, incluso otro emprendedor; la búsqueda se mantiene solo por el nombre del producto (RF-11) | Supuestos de diseño | HU-11, CU-11, CU-10 | 0 | **Aprobada** (sin cambios de código) |
 | CC-08 | 07/11/2026 | El registro conserva la página de origen: quien se registra desde "Contactar" vuelve al producto después de iniciar sesión | Diseño (flujos A1 y A3, para RNF-02) | CU-01, A1, A3, plantillas de registro e ingreso, `test_rnf02.py` | ≈ 0,5 | **Aprobada** (07/11/2026) y aplicada en E4 |
 | CC-09 | 07/11/2026 | Coherencia entre inventario y estado (punto B.2): una entrada sobre un producto *Agotado* lo vuelve *Disponible*; registrar 0 existencias lo deja *Agotado*; "Marcar disponible" no se permite con existencias en 0 | Diseño (ES1) y requerimiento (RF-18) | RF-18, HU-16, CU-16, A4, ES1 (`docs/diagramas/ES1-producto-v2.puml`), CP-15.3, CP-16.5, CP-16.6 | ≈ 0,5 | **Aprobada** con la Épica 5 y aplicada |
-| CC-10 | 07/11/2026 | Punto B.2 sobre finanzas: (a) los gastos se clasifican en una lista cerrada de seis categorías: Materia prima, Empaques, Transporte, Publicidad, Herramientas y equipos, y Otros; (b) al registrar un insumo, una casilla marcada por defecto lo registra también como gasto de *Materia prima* con la fecha del día, para no anotarlo dos veces (un insumo de costo 0 no genera gasto, RN-13) | Diseño (sin cambio de RF) | HU-18, HU-20, CU-18, CU-20 (postcondición "incluye los gastos de materia prima"), clase `Gasto` (atributo `categoria`), formulario de insumos, aviso de privacidad (versión 1.5) | ≈ 0,5 | **Aplicada en E6; pendiente de visto bueno** con la aprobación de la épica |
+| CC-10 | 07/11/2026 | Punto B.2 sobre finanzas: (a) los gastos se clasifican en una lista cerrada de seis categorías: Materia prima, Empaques, Transporte, Publicidad, Herramientas y equipos, y Otros; (b) al registrar un insumo, una casilla marcada por defecto lo registra también como gasto de *Materia prima* con la fecha del día, para no anotarlo dos veces (un insumo de costo 0 no genera gasto, RN-13) | Diseño (sin cambio de RF) | HU-18, HU-20, CU-18, CU-20 (postcondición "incluye los gastos de materia prima"), clase `Gasto` (atributo `categoria`), formulario de insumos, aviso de privacidad (versión 1.5) | ≈ 0,5 | **Aprobada** con la Épica 6 y aplicada |
+| CC-11 | 07/11/2026 | Punto B.2 sobre la notificación (HU-22 Esc. 1): el dueño de un producto desactivado por el administrador recibe un **aviso dentro de la plataforma** (en todas las páginas hasta que lo ve, y en "Avisos de la administración") con el motivo y el detalle. No se usa correo porque D6 lo limita a la recuperación de contraseña. Cada desactivación queda registrada (clase nueva `Desactivacion`: administrador, producto o cuenta, motivo, detalle y fecha) con una lista cerrada de seis motivos | Diseño (modelo de dominio) | HU-22, CU-22, D6, clase nueva `Desactivacion` y enumeración `MotivoDesactivacion`, aviso de privacidad (versión 1.6) | ≈ 1 | **Aplicada en E7; pendiente de visto bueno** con la aprobación de la épica |
+| CC-12 | 07/11/2026 | Efectos de desactivar una cuenta (HU-22 Esc. 2): además de perder el acceso, sus productos dejan de mostrarse en el catálogo sin cambiar de estado y no se le pueden enviar mensajes. El administrador puede **reactivar** una cuenta desactivada por error (un producto desactivado sigue siendo definitivo, ES1). No se desactiva la propia cuenta ni la de otro administrador. `Usuario` recibe un código aleatorio para las rutas de administración | Diseño | HU-22, CU-22, RN-09 (contrato `visibles_en_catalogo`), RN-19, CU-12, clase `Usuario` (atributo `codigo`) | ≈ 0,5 | **Aplicada en E7; pendiente de visto bueno** con la aprobación de la épica |
+| CC-13 | 07/11/2026 | Al iniciar sesión con la contraseña correcta, una cuenta desactivada vería "Tu cuenta fue desactivada por la administración…" en lugar del mensaje genérico de E1 | Requerimiento (cambia una decisión aprobada en E1: HU-02) | HU-02, CU-02 flujo 2b, `IngresoForm` | ≈ 0,5 | **Propuesta, pendiente de decisión** (no aplicada) |
 
 ## Texto actualizado de los artefactos
 
@@ -42,6 +45,12 @@ Proceso de la sección 4.2.2 del Entregable 2: registrar, evaluar el impacto, de
 
 **HU-20 (CC-10):** las categorías del gasto son Materia prima, Empaques, Transporte, Publicidad, Herramientas y equipos, y Otros.
 
+**HU-22, escenario 1 (CC-11):** "…entonces deja de mostrarse y se notifica a su dueño **con un aviso en la plataforma que indica el motivo**".
+
+**HU-22, escenario nuevo (CC-12):**
+
+> **Escenario 4: Reactivar una cuenta desactivada por error. Dado que** soy administrador y desactivé una cuenta por error, **cuando** la reactivo, **entonces** el usuario recupera el acceso y sus productos vuelven al catálogo.
+
 **ES1 (CC-02):** nueva transición *Agotado → Disponible* ("marcar disponible") y actividad interna "editar" en *Agotado*. *Desactivado* conserva su carácter definitivo. Fuente actualizada: `docs/diagramas/ES1-producto-v2.puml`.
 
 **Clase `Emprendimiento` (CC-03):** nuevo atributo `-nombre : String`.
@@ -51,3 +60,5 @@ Proceso de la sección 4.2.2 del Entregable 2: registrar, evaluar el impacto, de
 CC-02 a CC-04 suman cerca de 1,25 h. El Entregable 1 exige compensar las horas nuevas con una historia de menor prioridad (línea de corte por prioridad). Se propone descontarlas de la holgura de HU-10 (Should, búsqueda), que sigue sin sprint asignado.
 
 CC-09 y CC-10 suman cerca de 1 h más. Se descuentan de la misma holgura: las épicas E5 y E6 ya estaban sin sprint asignado (holgura del riesgo R1), así que no desplazan ninguna historia Must.
+
+CC-11 y CC-12 suman cerca de 1,5 h sobre las 3 h de HU-22 (Could). Como E7 también estaba fuera de los sprints (holgura del riesgo R1), no desplazan ninguna historia Must ni Should.

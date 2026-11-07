@@ -29,7 +29,9 @@ def lista(request):
 @require_http_methods(["GET", "POST"])
 def iniciar(request, codigo_producto):
     """HU-11 · CU-11 · S5: «Contactar» en un producto abre la conversación con su emprendedor."""
-    producto = get_object_or_404(Producto.objects.select_related("emprendimiento"), codigo=codigo_producto)
+    producto = get_object_or_404(
+        Producto.objects.select_related("emprendimiento__propietario"), codigo=codigo_producto
+    )
     if request.method == "GET":  # p. ej. al volver de iniciar sesión: se regresa al producto (A3)
         return redirect("catalogo:detalle", codigo=producto.codigo)
     if not producto.es_visible_en_catalogo:
@@ -47,7 +49,8 @@ def iniciar(request, codigo_producto):
 def conversacion(request, codigo):
     """HU-12 · CU-12 · S5: historial y envío de mensajes (asíncrono: se actualiza al recargar)."""
     conversacion = get_object_or_404(
-        Conversacion.objects.select_related("producto__emprendimiento__categoria"), codigo=codigo
+        Conversacion.objects.select_related("producto__emprendimiento__categoria", "comprador", "emprendedor"),
+        codigo=codigo,
     )
     if not conversacion.participa(request.user):
         raise PermissionDenied
@@ -57,6 +60,8 @@ def conversacion(request, codigo):
             servicios.enviar_mensaje(conversacion, request.user, form.cleaned_data["contenido"])
         except servicios.MensajeVacio:
             form.add_error("contenido", "Escribe un mensaje antes de enviarlo.")
+        except servicios.CuentaDesactivada:
+            return redirect("contacto:conversacion", codigo=conversacion.codigo)
         else:
             return redirect("contacto:conversacion", codigo=conversacion.codigo)
     return render(
@@ -66,6 +71,7 @@ def conversacion(request, codigo):
             "conversacion": conversacion,
             "producto": conversacion.producto,
             "con_quien": conversacion.nombre_de_la_otra_persona(request.user),
+            "otra_cuenta_activa": conversacion.otra_persona(request.user).activo,
             "mensajes_conversacion": servicios.obtener_mensajes(conversacion, request.user),
             "form": form,
         },

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load portafolio %}
+{% block titulo %}Desactivar producto · Administración · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <p class="migas"><a href="{% url 'administracion:productos' %}">Productos</a></p>
+  <h1 class="titulo-linea">Desactivar «{{ producto.nombre }}»</h1>
+  <div class="item-producto item-producto--suelto">
+    <img class="item-producto__foto" src="{{ producto.url_miniatura }}" alt="{{ producto.nombre }}" width="88" height="88">
+    <div class="item-producto__datos">
+      <p class="item-producto__nombre">{{ producto.nombre }}</p>
+      <p>{{ producto.emprendimiento.nombre }} · {{ producto.precio_referencia|pesos }}</p>
+    </div>
+  </div>
+  {% url 'administracion:productos' as volver %}
+  {% include "administracion/_formulario_desactivacion.html" with boton="Desactivar producto" volver=volver advertencia="Dejará de aparecer en el catálogo y no se puede deshacer (el producto desactivado es definitivo). Su dueño verá un aviso con el motivo." %}
+</div></div>
+{% endblock %}

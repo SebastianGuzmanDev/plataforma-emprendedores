@@ -1,0 +1,26 @@
+{% include "cuentas/_errores.html" %}
+<form class="formulario formulario--separado" method="post" novalidate>
+  {% csrf_token %}
+  <fieldset class="grupo{% if form.motivo.errors %} grupo--error{% endif %}" {% if form.motivo.errors %}aria-describedby="{{ form.motivo.auto_id }}_error"{% endif %}>
+    <legend>{{ form.motivo.label }}</legend>
+    <div class="opciones-motivo">
+      {% for opcion in form.motivo %}
+        <label class="opcion-categoria" for="{{ opcion.id_for_label }}">{{ opcion.tag }} <span>{{ opcion.choice_label }}</span></label>
+      {% endfor %}
+    </div>
+    {% if form.motivo.errors %}
+      <div id="{{ form.motivo.auto_id }}_error">
+        {% for error in form.motivo.errors %}<p class="campo__error"><span class="icono-alerta" aria-hidden="true">!</span><span>{{ error }}</span></p>{% endfor %}
+      </div>
+    {% endif %}
+  </fieldset>
+  {% include "cuentas/_campo.html" with campo=form.detalle %}
+  <div class="aviso aviso--error" role="note">
+    <span class="icono-alerta" aria-hidden="true">!</span>
+    <p>{{ advertencia }}</p>
+  </div>
+  <div class="acciones acciones--sin-margen">
+    <button type="submit" class="boton boton--primario">{{ boton }}</button>
+    <a class="boton boton--secundario" href="{{ volver }}">Cancelar</a>
+  </div>
+</form>

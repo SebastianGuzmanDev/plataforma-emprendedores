@@ -1631,3 +1631,106 @@ p {
     grid-column: auto;
   }
 }
+
+/* ================================================================== E7 · Administración */
+.opciones-motivo {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.opciones-motivo .opcion-categoria {
+  border-radius: 0.5rem;
+}
+
+/* Con textos largos el radio no se encoge por debajo de 24 px (WCAG 2.5.8) */
+.opciones-motivo .opcion-categoria input {
+  flex: none;
+}
+
+.opciones-motivo .opcion-categoria:has(input:checked) {
+  border-color: var(--color-primario);
+  box-shadow: inset 0 0 0 1px var(--color-primario);
+}
+
+.tarjetas--dos {
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 48rem) {
+  .tarjetas--dos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.resumen-admin__cifra {
+  font-family: var(--fuente-titulos);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--color-primario);
+}
+
+.historial,
+.cuentas {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.historial__item {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-borde);
+  border-left: 6px solid var(--color-primario);
+  border-radius: 0.4rem;
+}
+
+.historial__item--nuevo {
+  border-left-color: var(--color-acento);
+}
+
+.historial__item p {
+  margin: 0 0 0.25rem;
+}
+
+.historial__que {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.cuenta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 0.4rem;
+}
+
+.cuenta--desactivada {
+  border-style: dashed;
+}
+
+.cuenta__datos p {
+  margin: 0 0 0.3rem;
+}
+
+.cuenta__correo {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.cuenta__datos .estado {
+  margin-left: 0.25rem;
+}
+
+.item-producto--suelto {
+  margin-bottom: 1.25rem;
+}
+
+.aviso-administracion a {
+  color: var(--color-texto);
+  font-weight: 700;
+}

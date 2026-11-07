@@ -40,11 +40,19 @@
     </div>
   {% endif %}
 
-  {% include "cuentas/_errores.html" %}
-  <form class="formulario chat__formulario" method="post" novalidate>
-    {% csrf_token %}
-    {% include "cuentas/_campo.html" with campo=form.contenido %}
-    <button type="submit" class="boton boton--primario">Enviar</button>
-  </form>
+  {% if otra_cuenta_activa %}
+    {% include "cuentas/_errores.html" %}
+    <form class="formulario chat__formulario" method="post" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_campo.html" with campo=form.contenido %}
+      <button type="submit" class="boton boton--primario">Enviar</button>
+    </form>
+  {% else %}
+    {# RN-19 (E7): la otra cuenta perdió el acceso #}
+    <div class="aviso aviso--alerta" role="note">
+      <span class="icono-alerta" aria-hidden="true">!</span>
+      <p>Esta cuenta fue desactivada por la administración: ya no puede leer ni responder mensajes. El historial se conserva.</p>
+    </div>
+  {% endif %}
 </div></div>
 {% endblock %}

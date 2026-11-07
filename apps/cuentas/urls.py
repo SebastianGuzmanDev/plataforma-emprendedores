@@ -12,7 +12,6 @@ urlpatterns = [
     path("salir/", views.SalidaView.as_view(), name="salir"),
     path("mi-cuenta/", views.mi_cuenta, name="mi_cuenta"),
     # RF-03 · acceso por rol
-    path("panel/administracion/", views.panel_administracion, name="panel_administracion"),
     # HU-03 · RF-04
     path("recuperar/", views.RecuperarView.as_view(), name="recuperar"),
     path("recuperar/enviado/", views.RecuperarEnviadoView.as_view(), name="recuperar_enviado"),

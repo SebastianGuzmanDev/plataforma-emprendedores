@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "apps.inventario",
     # E6 · Finanzas
     "apps.finanzas",
+    # E7 · Administración
+    "apps.administracion",
 ]
 
 MIDDLEWARE = [
@@ -70,6 +72,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.cuentas.context_processors.plataforma",
                 "apps.contacto.context_processors.mensajes_sin_leer",
+                "apps.administracion.context_processors.avisos_administracion",
             ],
         },
     },
@@ -118,7 +121,8 @@ DOMINIOS_INSTITUCIONALES = _lista_desde_entorno("DOMINIOS_INSTITUCIONALES", "ami
 # 1.1 (E2): perfil y productos en el catálogo · 1.2 (CC-03): nombre del emprendimiento · 1.3 (E4): mensajes
 # 1.4 (E5): inventario e insumos
 # 1.5 (E6): ingresos, gastos y resumen financiero
-AVISO_PRIVACIDAD_VERSION = "1.5"
+# 1.6 (E7): administración (desactivaciones, motivo y acceso del administrador)
+AVISO_PRIVACIDAD_VERSION = "1.6"
 CORREO_CONTACTO_PRIVACIDAD = os.environ.get(
     "CORREO_CONTACTO_PRIVACIDAD", "privacidad@por-definir.amigo.edu.co"
 )

@@ -14,9 +14,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import FormView
 
-from .decorators import rol_requerido
 from .forms import IngresoForm, RecuperarContrasenaForm, RegistroForm, RestablecerContrasenaForm
-from .models import Rol
 from .servicios import RegistroRechazado, registrar_usuario
 
 
@@ -92,12 +90,6 @@ class SalidaView(auth_views.LogoutView):
 def mi_cuenta(request):
     """Página privada con los datos de la cuenta del usuario con sesión (RNF-05)."""
     return render(request, "cuentas/mi_cuenta.html", {"usuario": request.user})
-
-
-@rol_requerido(Rol.ADMINISTRADOR)
-def panel_administracion(request):
-    """Punto de entrada del administrador; la Épica 7 agrega aquí la moderación."""
-    return render(request, "cuentas/panel_administracion.html")
 
 
 class RecuperarView(auth_views.PasswordResetView):

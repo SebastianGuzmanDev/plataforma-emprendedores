@@ -58,7 +58,9 @@ def listado(request):
 
 
 def _producto_publico(codigo):
-    return get_object_or_404(Producto.objects.select_related("emprendimiento__categoria"), codigo=codigo)
+    return get_object_or_404(
+        Producto.objects.select_related("emprendimiento__categoria", "emprendimiento__propietario"), codigo=codigo
+    )
 
 
 def detalle(request, codigo):

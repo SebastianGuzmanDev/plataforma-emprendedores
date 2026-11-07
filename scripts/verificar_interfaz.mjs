@@ -18,6 +18,8 @@
  *   (incluye inventario E5 y finanzas E6)
  * Pantallas de mensajes (E4): define una cuenta con conversaciones
  *   COMPRADOR_CORREO=... COMPRADOR_CONTRASENA=... node scripts/verificar_interfaz.mjs
+ * Pantallas de administración (E7): define una cuenta administradora
+ *   ADMIN_CORREO=... ADMIN_CONTRASENA=... node scripts/verificar_interfaz.mjs
  */
 import { mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -48,6 +50,12 @@ const PAGINAS_EMPRENDEDOR = [
   ["e6-finanzas", "/finanzas/"],
   ["e6-nuevo-ingreso", "/finanzas/ingresos/nuevo/"],
   ["e6-nuevo-gasto", "/finanzas/gastos/nuevo/"],
+  ["e7-avisos", "/administracion/avisos/"],
+];
+const PAGINAS_ADMIN = [
+  ["e7-panel", "/administracion/"],
+  ["e7-productos", "/administracion/productos/"],
+  ["e7-cuentas", "/administracion/cuentas/"],
 ];
 const carpeta = new URL(`./capturas/${navegador}/`, import.meta.url);
 mkdirSync(carpeta, { recursive: true });
@@ -180,6 +188,38 @@ if (process.env.COMPRADOR_CORREO) {
     await contexto.close();
   }
 }
+if (process.env.ADMIN_CORREO) {
+  // Pantallas de administración (E7); no desactiva nada: solo abre los formularios
+  for (const ancho of ANCHOS) {
+    const contexto = await browser.newContext({ viewport: { width: ancho, height: 800 } });
+    const admin = await contexto.newPage();
+    await admin.goto(BASE_URL + "/cuentas/ingresar/");
+    await admin.fill("#id_username", process.env.ADMIN_CORREO);
+    await admin.fill("#id_password", process.env.ADMIN_CONTRASENA || "");
+    await Promise.all([admin.waitForNavigation(), admin.click("form.formulario button[type=submit]")]);
+    for (const [nombre, ruta] of PAGINAS_ADMIN) {
+      await admin.goto(BASE_URL + ruta);
+      await revisar(admin, nombre, ancho);
+      await admin.screenshot({ path: new URL(`${nombre}-${ancho}.png`, carpeta).pathname, fullPage: true });
+    }
+    for (const [nombre, ruta, selector] of [
+      ["e7-desactivar-producto", "/administracion/productos/", ".item-producto__acciones a"],
+      ["e7-desactivar-cuenta", "/administracion/cuentas/", ".cuenta__acciones a"],
+    ]) {
+      await admin.goto(BASE_URL + ruta);
+      const enlace = await admin.$(selector);
+      if (!enlace) continue;
+      await Promise.all([admin.waitForNavigation(), enlace.click()]);
+      await revisar(admin, nombre, ancho);
+      await admin.screenshot({ path: new URL(`${nombre}-${ancho}.png`, carpeta).pathname, fullPage: true });
+      // Sin motivo (HU-22): se rechaza y no se desactiva nada
+      await Promise.all([admin.waitForNavigation(), admin.click("form.formulario button[type=submit]")]);
+      await revisar(admin, `${nombre}-con-errores`, ancho);
+      await admin.screenshot({ path: new URL(`${nombre}-errores-${ancho}.png`, carpeta).pathname, fullPage: true });
+    }
+    await contexto.close();
+  }
+}
 await browser.close();
 
 if (fallos.length) {
@@ -187,5 +227,5 @@ if (fallos.length) {
   process.exit(1);
 }
 const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 5 : 0) +
-  (process.env.COMPRADOR_CORREO ? 2 : 0));
+  (process.env.COMPRADOR_CORREO ? 2 : 0) + (process.env.ADMIN_CORREO ? PAGINAS_ADMIN.length + 4 : 0));
 console.log(`\nInterfaz verificada en ${navegador}: ${vistas} vistas sin problemas.`);

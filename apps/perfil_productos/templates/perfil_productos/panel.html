@@ -82,7 +82,14 @@
         <h2 id="titulo-desactivados">Desactivados ({{ productos_desactivados|length }})</h2>
         <p class="texto-secundario">No aparecen en el catálogo y no se pueden reactivar. Para volver a ofrecer uno, publícalo de nuevo.</p>
         <ul class="lista-simple">
-          {% for producto in productos_desactivados %}<li>{{ producto.nombre }} · {{ producto.precio_referencia|pesos }}</li>{% endfor %}
+          {% for producto in productos_desactivados %}
+            <li>{{ producto.nombre }} · {{ producto.precio_referencia|pesos }}
+              {% with desactivacion=producto.desactivaciones.all|first %}{% if desactivacion %}
+                <span class="estado estado--alerta">Desactivado por la administración</span>
+                <a href="{% url 'administracion:avisos' %}">Ver el motivo<span class="visualmente-oculto"> de la desactivación de {{ producto.nombre }}</span></a>
+              {% endif %}{% endwith %}
+            </li>
+          {% endfor %}
         </ul>
       </section>
     {% endif %}

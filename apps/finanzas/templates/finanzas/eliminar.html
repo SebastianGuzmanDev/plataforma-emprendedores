@@ -7,7 +7,7 @@
   <div class="pagina__cuerpo">
     <h1 class="titulo-linea">¿Eliminar el {{ tipo }} de {{ registro.monto|pesos }}?</h1>
     <dl class="datos">
-      <div><dt>Fecha</dt><dd>{{ registro.fecha|date:"j \d\e F \d\e Y" }}</dd></div>
+      <div><dt>Fecha</dt><dd>{{ registro.fecha|date:"j \d\e F \d\e Y"|lower }}</dd></div>
       {% if registro.categoria %}<div><dt>Categoría</dt><dd>{{ registro.get_categoria_display }}</dd></div>{% endif %}
     </dl>
     <div class="aviso aviso--error" role="note">
