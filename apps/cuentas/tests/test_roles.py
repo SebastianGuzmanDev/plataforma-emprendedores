@@ -21,7 +21,7 @@ from .utilidades import (
 
 # Desde E2 el panel del emprendedor vive en el módulo Perfil y productos.
 URL_PANEL_EMPRENDEDOR = reverse("emprendimiento:panel")
-URL_PANEL_ADMIN = reverse("cuentas:panel_administracion")
+URL_PANEL_ADMIN = reverse("administracion:panel")  # E7 reemplaza el marcador de E1
 
 
 class AccesoPorRolTests(TestCase):

@@ -77,9 +77,9 @@ class DatosMinimosTests(TestCase):
         )
 
     def test_rnf06_el_aviso_informa_el_tratamiento_de_las_finanzas(self):
-        self.assertEqual(settings.AVISO_PRIVACIDAD_VERSION, "1.5")
+        # La versión vigente la fija el último cambio del aviso (1.6 desde E7).
         respuesta = self.client.get(reverse("aviso_privacidad"))
-        for texto in ["Versión 1.5", "Tus finanzas", "Solo tú puedes ver tus finanzas"]:
+        for texto in [f"Versión {settings.AVISO_PRIVACIDAD_VERSION}", "Tus finanzas", "Solo tú puedes ver tus finanzas"]:
             with self.subTest(texto=texto):
                 self.assertContains(respuesta, texto)
 
