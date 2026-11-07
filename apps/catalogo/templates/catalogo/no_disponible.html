@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Producto no disponible · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <h1 class="titulo-linea">Este producto ya no está disponible</h1>
+  <p>El emprendedor lo retiró del catálogo. Puede que encuentres algo parecido entre los demás productos.</p>
+  <p class="acciones"><a class="boton boton--primario" href="{% url 'catalogo:listado' %}">Ir al catálogo</a></p>
+</div></div>
+{% endblock %}

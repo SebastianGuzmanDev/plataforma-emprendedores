@@ -10,6 +10,7 @@ Proceso de la sección 4.2.2 del Entregable 2: registrar, evaluar el impacto, de
 | CC-03 | 06/11/2026 | Nombre obligatorio en el perfil del emprendimiento (hasta 80 caracteres) | Requerimiento | RF-05, HU-04, CU-04, A2, clase `Emprendimiento`, RN-06, aviso de privacidad (versión 1.2), CP-04.1 a CP-04.5 | ≈ 0,5 | **Aprobada** y aplicada |
 | CC-04 | 06/11/2026 | La plataforma se llama **Emprendi Amigos** (antes "Plataforma de Emprendedores", nombre provisional S-E1-7) | Presentación | Encabezado, títulos, correo de recuperación, README | ≈ 0,25 | **Aprobada** y aplicada |
 | CC-05 | 06/11/2026 | Confirmar los supuestos S-E2-1 (categoría "Otros") y S-E2-2 (precio de 0 permitido) | Supuestos de diseño | Anexo B del Entregable 2 | 0 | **Aprobada** (sin cambios de código) |
+| CC-06 | 07/11/2026 | Miniatura de 600 px por producto para las tarjetas del catálogo, generada junto con la foto | Diseño (sin cambio de requerimiento) | Clase `Producto` (atributo `miniatura`), S3 ("guardar(foto)" guarda foto y miniatura), D5, migración `0004_miniatura` | ≈ 0,5 | **Aplicada en E3; pendiente de visto bueno** con la aprobación de la épica |
 
 ## Texto actualizado de los artefactos
 

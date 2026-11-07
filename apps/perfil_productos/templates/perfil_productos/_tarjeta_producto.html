@@ -1,9 +1,10 @@
 {% load portafolio %}
-{# Tarjeta de producto tal como la mostrará el catálogo (E3 la reutiliza). #}
+{# Tarjeta de producto: la usan el catálogo (E3) y la vista previa del emprendedor (E2). #}
 <article class="tarjeta-producto">
-  <img class="tarjeta-producto__foto" src="{{ producto.foto.url }}" alt="{{ producto.nombre }}" width="400" height="300" loading="lazy">
+  <img class="tarjeta-producto__foto" src="{{ producto.url_miniatura }}" alt="{{ producto.nombre }}" width="400" height="300"{% if not carga_inmediata %} loading="lazy"{% endif %} decoding="async">
   <div class="tarjeta-producto__cuerpo">
-    <h3 class="tarjeta-producto__nombre">{{ producto.nombre }}</h3>
+    <h3 class="tarjeta-producto__nombre"><a class="tarjeta-producto__enlace" href="{% url 'catalogo:detalle' codigo=producto.codigo %}">{{ producto.nombre }}</a></h3>
+    {% if mostrar_emprendimiento %}<p class="tarjeta-producto__emprendimiento">{{ producto.emprendimiento.nombre }} · {{ producto.emprendimiento.categoria }}</p>{% endif %}
     <p class="tarjeta-producto__precio">{{ producto.precio_referencia|pesos }} <span class="texto-pequeno">precio de referencia</span></p>
     {% include "perfil_productos/_estado.html" %}
   </div>

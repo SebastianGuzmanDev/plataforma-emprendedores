@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load portafolio %}
+{% block titulo %}{{ producto.nombre }} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <p class="migas"><a href="{% url 'catalogo:listado' %}">Catálogo</a> / <a href="{% url 'catalogo:listado' %}?categoria={{ emprendimiento.categoria.slug }}">{{ emprendimiento.categoria }}</a></p>
+
+  <article class="detalle-producto" aria-labelledby="titulo-producto">
+    <img class="detalle-producto__foto" src="{{ producto.foto.url }}" alt="{{ producto.nombre }}" width="800" height="600">
+    <div class="detalle-producto__info">
+      <h1 id="titulo-producto" class="titulo-linea">{{ producto.nombre }}</h1>
+      <p class="detalle-producto__precio">{{ producto.precio_referencia|pesos }} <span class="texto-pequeno">precio de referencia</span></p>
+      {% include "perfil_productos/_estado.html" %}
+
+      <div class="detalle-producto__accion">
+        {% if es_propio %}
+          <p>Este producto es tuyo. <a href="{% url 'emprendimiento:editar' codigo=producto.codigo %}">Editarlo</a></p>
+        {% elif user.is_authenticated %}
+          <a class="boton boton--primario" href="{% url 'catalogo:contactar' codigo=producto.codigo %}">Contactar</a>
+        {% else %}
+          <a class="boton boton--primario" href="{% url 'cuentas:ingresar' %}?next={{ request.path|urlencode }}">Contactar</a>
+          <p class="texto-pequeno">Para contactar al emprendedor debes iniciar sesión.</p>
+        {% endif %}
+        <p class="texto-pequeno">La plataforma no procesa pagos: el precio y la entrega se acuerdan con el emprendedor.</p>
+      </div>
+
+      <section class="detalle-producto__emprendimiento" aria-labelledby="titulo-emprendimiento">
+        <h2 id="titulo-emprendimiento">{{ emprendimiento.nombre }}</h2>
+        <span class="estado estado--categoria">{{ emprendimiento.categoria }}</span>
+        <p>{{ emprendimiento.descripcion|linebreaksbr }}</p>
+        <dl class="datos datos--compactos">
+          <div><dt>Horarios</dt><dd>{{ emprendimiento.horarios }}</dd></div>
+          <div><dt>Zona de entrega</dt><dd>{{ emprendimiento.zona_entrega }}</dd></div>
+        </dl>
+      </section>
+    </div>
+  </article>
+</div>
+{% endblock %}

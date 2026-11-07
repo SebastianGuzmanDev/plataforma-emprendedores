@@ -119,7 +119,8 @@ class PrivacidadE2Tests(TestCase):
 
 class LegalE2Tests(TestCase):
     CAMPOS_EMPRENDIMIENTO = {"id", "propietario", "nombre", "categoria", "descripcion", "horarios", "zona_entrega"}
-    CAMPOS_PRODUCTO = {"id", "codigo", "emprendimiento", "nombre", "foto", "precio_referencia", "estado"}
+    # «miniatura» llega con CC-06 (cambio de diseño para RNF-01).
+    CAMPOS_PRODUCTO = {"id", "codigo", "emprendimiento", "nombre", "foto", "miniatura", "precio_referencia", "estado"}
 
     def test_rnf06_el_perfil_y_el_producto_solo_guardan_los_datos_previstos(self):
         """RF-05 (con el nombre de CC-03), RF-06 y el modelo de dominio; existencias y umbral llegan con E5."""

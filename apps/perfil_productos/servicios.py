@@ -10,7 +10,7 @@ from django.db import transaction
 from apps.cuentas.models import Rol
 
 from .models import Emprendimiento, EstadoProducto, Producto
-from .reglas import procesar_foto
+from .reglas import crear_miniatura, procesar_foto
 
 
 class PerfilRequerido(Exception):
@@ -44,11 +44,18 @@ def publicar_producto(emprendedor, *, nombre, foto, precio):
         precio_referencia=precio,
         estado=EstadoProducto.DISPONIBLE,
     )
-    foto_procesada = procesar_foto(foto)
     with transaction.atomic():
-        producto.foto.save(foto_procesada.name, foto_procesada, save=False)
+        _guardar_fotos(producto, foto)
         producto.save()
     return producto
+
+
+def _guardar_fotos(producto, foto):
+    """S3 · guardar(foto): la foto normalizada y su miniatura (CC-06) con el mismo nombre aleatorio."""
+    foto_procesada = procesar_foto(foto)
+    miniatura = crear_miniatura(foto, nombre=foto_procesada.name)
+    producto.foto.save(foto_procesada.name, foto_procesada, save=False)
+    producto.miniatura.save(miniatura.name, miniatura, save=False)
 
 
 def editar_producto(producto, *, nombre, precio, foto=None):
@@ -56,13 +63,14 @@ def editar_producto(producto, *, nombre, precio, foto=None):
     producto.validar_edicion()
     producto.nombre = nombre.strip()
     producto.precio_referencia = precio
-    foto_anterior = producto.foto.name if foto else None
+    anteriores = [producto.foto.name, producto.miniatura.name] if foto else []
     if foto:
-        foto_procesada = procesar_foto(foto)
-        producto.foto.save(foto_procesada.name, foto_procesada, save=False)
+        _guardar_fotos(producto, foto)
     producto.save()
-    if foto_anterior and foto_anterior != producto.foto.name:
-        producto.foto.storage.delete(foto_anterior)
+    actuales = {producto.foto.name, producto.miniatura.name}
+    for nombre in anteriores:
+        if nombre and nombre not in actuales:
+            producto.foto.storage.delete(nombre)
     return producto
 
 
