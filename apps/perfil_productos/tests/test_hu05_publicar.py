@@ -55,7 +55,7 @@ class HU05PublicarTests(MediaTemporalMixin, TestCase):
         self.assertContains(vista, "Arepa de queso")
         self.assertContains(vista, "$ 5.000")
         self.assertContains(vista, "Disponible")
-        self.assertContains(vista, f'src="{producto.foto.url}"')
+        self.assertContains(vista, f'src="{producto.url_miniatura}"')  # CC-06: la tarjeta usa la miniatura
 
     def test_cp_05_2_foto_mayor_a_5_mb_se_rechaza_e_indica_el_limite(self):
         """CP-05.2 · Esc. 2: una foto de más de 5 MB se rechaza indicando el límite."""
