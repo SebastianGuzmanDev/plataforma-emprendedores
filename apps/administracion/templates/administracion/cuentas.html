@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Cuentas · Administración · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <p class="migas"><a href="{% url 'administracion:panel' %}">Administración</a></p>
+  <div class="encabezado-pagina encabezado-pagina--catalogo">
+    <h1 class="titulo-linea">Cuentas</h1>
+    {% include "administracion/_buscador.html" with etiqueta="Buscar por correo institucional" ejemplo="nombre.apellido" %}
+  </div>
+  <p class="resultados__total"><strong>{{ pagina.paginator.count }} cuenta{{ pagina.paginator.count|pluralize }}{% if consulta %} para «{{ consulta }}»{% endif %}</strong></p>
+  {% if pagina.object_list %}
+    <ul class="cuentas">
+      {% for cuenta in pagina %}
+        <li class="cuenta{% if not cuenta.activo %} cuenta--desactivada{% endif %}">
+          <div class="cuenta__datos">
+            <p class="cuenta__correo">{{ cuenta.correo_institucional }}</p>
+            <p>
+              <span class="insignia-rol">{{ cuenta.get_rol_display }}</span>
+              {% if cuenta.activo %}<span class="estado">Activa</span>{% else %}<span class="estado estado--desactivado">Desactivada</span>{% endif %}
+            </p>
+          </div>
+          <div class="cuenta__acciones">
+            {% if cuenta.es_administrador %}
+              <span class="texto-pequeno">Cuenta de administración</span>
+            {% elif cuenta.activo %}
+              <a class="boton boton--secundario boton--compacto" href="{% url 'administracion:desactivar_cuenta' codigo=cuenta.codigo %}">Desactivar<span class="visualmente-oculto"> la cuenta {{ cuenta.correo_institucional }}</span></a>
+            {% else %}
+              <form method="post" action="{% url 'administracion:reactivar_cuenta' codigo=cuenta.codigo %}">
+                {% csrf_token %}
+                <button type="submit" class="boton boton--secundario boton--compacto">Reactivar<span class="visualmente-oculto"> la cuenta {{ cuenta.correo_institucional }}</span></button>
+              </form>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    {% include "administracion/_paginacion.html" %}
+  {% else %}
+    <div class="estado-vacio"><p>No hay cuentas que coincidan con la búsqueda.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

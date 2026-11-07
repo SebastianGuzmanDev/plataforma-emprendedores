@@ -1,0 +1,7 @@
+{% if pagina.has_other_pages %}
+  <nav class="paginacion" aria-label="Paginación">
+    {% if pagina.has_previous %}<a class="boton boton--secundario boton--compacto" href="?q={{ consulta|urlencode }}&amp;pagina={{ pagina.previous_page_number }}" rel="prev">Anterior</a>{% endif %}
+    <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+    {% if pagina.has_next %}<a class="boton boton--secundario boton--compacto" href="?q={{ consulta|urlencode }}&amp;pagina={{ pagina.next_page_number }}" rel="next">Siguiente</a>{% endif %}
+  </nav>
+{% endif %}

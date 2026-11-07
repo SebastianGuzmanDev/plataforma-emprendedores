@@ -78,7 +78,7 @@
               {% if movimiento.categoria %}<span class="movimiento__categoria">{{ movimiento.categoria }}</span>{% endif %}
             </span>
             <span class="movimiento__monto">{% if movimiento.tipo == "gasto" %}<span class="visualmente-oculto">menos </span>{% endif %}{{ movimiento.monto|pesos }}</span>
-            <a class="movimiento__eliminar" href="{% url 'finanzas:eliminar' tipo=movimiento.tipo codigo=movimiento.codigo %}">Eliminar<span class="visualmente-oculto"> el {{ movimiento.tipo }} de {{ movimiento.monto|pesos }} del {{ movimiento.fecha|date:"j \d\e F" }}</span></a>
+            <a class="movimiento__eliminar" href="{% url 'finanzas:eliminar' tipo=movimiento.tipo codigo=movimiento.codigo %}">Eliminar<span class="visualmente-oculto"> el {{ movimiento.tipo }} de {{ movimiento.monto|pesos }} del {{ movimiento.fecha|date:"j \d\e F"|lower }}</span></a>
           </li>
         {% endfor %}
       </ul>

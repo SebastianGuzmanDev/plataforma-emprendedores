@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Avisos de la administración · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <p class="migas"><a href="{% url 'emprendimiento:panel' %}">Mi emprendimiento</a></p>
+  <h1 class="titulo-linea">Avisos de la administración</h1>
+  {% if avisos %}
+    <ul class="historial">
+      {% for aviso in avisos %}
+        <li class="historial__item{% if not aviso.vista_en %} historial__item--nuevo{% endif %}">
+          <p class="historial__que">«{{ aviso.producto.nombre }}» fue desactivado{% if not aviso.vista_en %} <span class="estado estado--alerta">Nuevo</span>{% endif %}</p>
+          <p><strong>Motivo:</strong> {{ aviso.get_motivo_display }}</p>
+          {% if aviso.detalle %}<p><strong>Detalle:</strong> {{ aviso.detalle }}</p>{% endif %}
+          <p class="texto-pequeno">{{ aviso.fecha|date:"j \d\e F \d\e Y, H:i"|lower }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    <p>El producto ya no aparece en el catálogo. Si crees que es un error, escríbenos a <a href="mailto:{{ CORREO_CONTACTO_PRIVACIDAD }}">{{ CORREO_CONTACTO_PRIVACIDAD }}</a>.</p>
+  {% else %}
+    <div class="estado-vacio"><p>No tienes avisos de la administración.</p></div>
+  {% endif %}
+  <p class="acciones"><a class="boton boton--secundario" href="{% url 'emprendimiento:panel' %}">Volver a mi emprendimiento</a></p>
+</div></div>
+{% endblock %}

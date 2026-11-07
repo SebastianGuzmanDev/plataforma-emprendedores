@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Desactivar cuenta · Administración · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <p class="migas"><a href="{% url 'administracion:cuentas' %}">Cuentas</a></p>
+  <h1 class="titulo-linea">Desactivar la cuenta</h1>
+  <dl class="datos">
+    <div><dt>Correo institucional</dt><dd>{{ cuenta.correo_institucional }}</dd></div>
+    <div><dt>Rol</dt><dd>{{ cuenta.get_rol_display }}</dd></div>
+  </dl>
+  {% url 'administracion:cuentas' as volver %}
+  {% include "administracion/_formulario_desactivacion.html" with boton="Desactivar cuenta" volver=volver advertencia="La persona perderá el acceso de inmediato, incluida la sesión que tenga abierta, y sus productos dejarán de aparecer en el catálogo. Podrás reactivarla si fue un error." %}
+</div></div>
+{% endblock %}

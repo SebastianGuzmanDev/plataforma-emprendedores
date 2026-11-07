@@ -22,8 +22,8 @@
       <p class="acciones"><a class="boton boton--primario" href="{% url 'emprendimiento:panel' %}">Ir a mi emprendimiento</a></p>
     {% elif usuario.es_administrador %}
       <h2>Administración</h2>
-      <p>Desde el panel de administración podrás desactivar cuentas o contenido que incumpla las reglas.</p>
-      <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:panel_administracion' %}">Ir al panel de administración</a></p>
+      <p>Desde el panel de administración desactivas productos o cuentas que incumplen las reglas.</p>
+      <p class="acciones"><a class="boton boton--primario" href="{% url 'administracion:panel' %}">Ir al panel de administración</a></p>
     {% else %}
       <h2>Qué sigue</h2>
       <p>Explora lo que venden los emprendedores de la universidad: filtra por categoría o busca por palabra clave.</p>

@@ -25,6 +25,7 @@
         {% if user.is_authenticated %}
           <span class="insignia-rol"><span class="visualmente-oculto">Rol: </span>{{ user.get_rol_display }}</span>
           {% if user.es_emprendedor %}<a href="{% url 'emprendimiento:panel' %}">Mi emprendimiento</a>{% endif %}
+          {% if user.es_administrador %}<a href="{% url 'administracion:panel' %}">Administración</a>{% endif %}
           <a href="{% url 'contacto:lista' %}">Mensajes{% if mensajes_sin_leer %} <span class="contador" aria-hidden="true">{{ mensajes_sin_leer }}</span><span class="visualmente-oculto">, {{ mensajes_sin_leer }} mensaje{{ mensajes_sin_leer|pluralize }} sin leer</span>{% endif %}</a>
           <a href="{% url 'cuentas:mi_cuenta' %}">Mi cuenta</a>
           <form method="post" action="{% url 'cuentas:salir' %}">
@@ -46,6 +47,15 @@
           <p>{{ mensaje }}</p>
         </div>
       {% endfor %}
+    </div>
+  {% endif %}
+  {% if avisos_administracion %}
+    {# E7 · CC-11: «se notifica a su dueño» (HU-22, escenario 1) #}
+    <div class="contenedor mensajes">
+      <div class="aviso aviso--alerta aviso-administracion" role="status">
+        <span class="icono-alerta" aria-hidden="true">!</span>
+        <p>La administración desactivó {{ avisos_administracion }} de tus productos por incumplir las reglas. <a href="{% url 'administracion:avisos' %}">Ver el motivo</a></p>
+      </div>
     </div>
   {% endif %}
 

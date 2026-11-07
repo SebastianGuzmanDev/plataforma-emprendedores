@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titulo %}Administración · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="encabezado-pagina">
+    <h1 class="titulo-linea">Administración</h1>
+  </div>
+  <p>Desactiva los productos o las cuentas que incumplen las reglas para mantener la plataforma confiable. No tienes acceso a los mensajes, el inventario ni las finanzas de nadie.</p>
+
+  <div class="tarjetas tarjetas--dos">
+    <section class="tarjeta" aria-labelledby="titulo-productos">
+      <h2 id="titulo-productos">Productos</h2>
+      <p><span class="resumen-admin__cifra">{{ productos_visibles }}</span> en el catálogo</p>
+      <p class="acciones acciones--sin-margen"><a class="boton boton--primario" href="{% url 'administracion:productos' %}">Revisar productos</a></p>
+    </section>
+    <section class="tarjeta" aria-labelledby="titulo-cuentas">
+      <h2 id="titulo-cuentas">Cuentas</h2>
+      <p><span class="resumen-admin__cifra">{{ cuentas_activas }}</span> activas · {{ cuentas_desactivadas }} desactivada{{ cuentas_desactivadas|pluralize }}</p>
+      <p class="acciones acciones--sin-margen"><a class="boton boton--primario" href="{% url 'administracion:cuentas' %}">Revisar cuentas</a></p>
+    </section>
+  </div>
+
+  <section class="bloque" aria-labelledby="titulo-historial">
+    <h2 id="titulo-historial">Historial de desactivaciones</h2>
+    {% if historial %}
+      <ul class="historial">
+        {% for registro in historial %}
+          <li class="historial__item">
+            <p class="historial__que">
+              {% if registro.producto %}Producto «{{ registro.producto.nombre }}»{% else %}Cuenta {{ registro.cuenta.correo_institucional }}{% endif %}
+              {% if registro.reactivada_en %}<span class="estado">Reactivada</span>{% endif %}
+            </p>
+            <p>{{ registro.get_motivo_display }}{% if registro.detalle %}: «{{ registro.detalle }}»{% endif %}</p>
+            <p class="texto-pequeno">{{ registro.fecha|date:"j \d\e F \d\e Y, H:i"|lower }} · {{ registro.administrador.correo_institucional|default:"administrador eliminado" }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="estado-vacio"><p>Aún no se ha desactivado ningún producto ni ninguna cuenta.</p></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
