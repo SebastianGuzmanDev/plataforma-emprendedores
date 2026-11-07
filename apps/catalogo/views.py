@@ -1,13 +1,12 @@
 """
 Vistas del módulo E3 · Catálogo (capa de presentación). Supuesto S-4 del Entregable 2:
-catálogo, filtro, búsqueda y detalle no exigen sesión; contactar sí (A3).
+catálogo, filtro, búsqueda y detalle no exigen sesión; contactar sí (A3, módulo E4).
 """
 from urllib.parse import urlencode
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from apps.perfil_productos.models import Producto
 
@@ -73,17 +72,3 @@ def detalle(request, codigo):
         "catalogo/detalle.html",
         {"producto": producto, "emprendimiento": producto.emprendimiento, "es_propio": es_propio},
     )
-
-
-@login_required
-def contactar(request, codigo):
-    """
-    A3 · «Presionar Contactar» con sesión iniciada. La conversación (HU-11 a HU-14) se
-    construye en la Épica 4; por ahora se muestra cómo encontrar al emprendedor.
-    """
-    producto = _producto_publico(codigo)
-    if not producto.es_visible_en_catalogo:
-        return render(request, "catalogo/no_disponible.html", status=404)
-    if producto.emprendimiento.propietario_id == request.user.pk:  # RN-18
-        return redirect("catalogo:detalle", codigo=producto.codigo)
-    return render(request, "catalogo/contactar.html", {"producto": producto, "emprendimiento": producto.emprendimiento})

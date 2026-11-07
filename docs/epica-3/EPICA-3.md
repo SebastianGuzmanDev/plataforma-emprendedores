@@ -2,7 +2,7 @@
 
 **Proyecto:** Emprendi Amigos (MVP) · Universidad Católica Luis Amigó
 **Fuentes:** Entregable 1 (HU-07 a HU-10, RF-09 a RF-12, RNF-01), Entregable 2 (CU-07 a CU-10, diagramas A3 y S4, ES1, reglas RN-09 y RN-18, supuesto S-4) y *Manual de Identidad Visual* versión 02.
-**Estado:** entregada para revisión. No se ha iniciado la Épica 4.
+**Estado:** aprobada el 07/11/2026 con las decisiones CC-06 (miniaturas) y CC-07 (cualquier cuenta que no sea la dueña puede contactar; búsqueda solo por el nombre del producto). La página provisional de «Contactar» fue reemplazada por el chat en la [Épica 4](../epica-4/EPICA-4.md#6-cambios-sobre-las-épicas-anteriores).
 
 ---
 

@@ -3,7 +3,7 @@
 
 {% block formulario %}
 <h1 class="titulo-linea">Inicia sesión</h1>
-<p class="texto-secundario">¿Aún no tienes cuenta? <a href="{% url 'cuentas:registro' %}">Crea una con tu correo institucional</a></p>
+<p class="texto-secundario">¿Aún no tienes cuenta? <a href="{% url 'cuentas:registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Crea una con tu correo institucional</a></p>
 
 {% include "cuentas/_errores.html" %}
 

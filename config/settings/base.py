@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "apps.perfil_productos",
     # E3 · Catálogo
     "apps.catalogo",
+    # E4 · Contacto por chat
+    "apps.contacto",
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.cuentas.context_processors.plataforma",
+                "apps.contacto.context_processors.mensajes_sin_leer",
             ],
         },
     },
@@ -108,8 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
 DOMINIOS_INSTITUCIONALES = _lista_desde_entorno("DOMINIOS_INSTITUCIONALES", "amigo.edu.co")
 
 # RNF-06 (Ley 1581 de 2012): versión del aviso que acepta cada titular.
-# 1.1 (E2): perfil y productos publicados en el catálogo · 1.2 (CC-03): nombre del emprendimiento
-AVISO_PRIVACIDAD_VERSION = "1.2"
+# 1.1 (E2): perfil y productos en el catálogo · 1.2 (CC-03): nombre del emprendimiento · 1.3 (E4): mensajes
+AVISO_PRIVACIDAD_VERSION = "1.3"
 CORREO_CONTACTO_PRIVACIDAD = os.environ.get(
     "CORREO_CONTACTO_PRIVACIDAD", "privacidad@por-definir.amigo.edu.co"
 )

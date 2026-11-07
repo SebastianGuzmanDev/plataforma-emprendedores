@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo %}Mis mensajes · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <h1 class="titulo-linea">Mis mensajes</h1>
+  {% if conversaciones %}
+    <ul class="conversaciones">
+      {% for item in conversaciones %}{% with c=item.conversacion %}
+        <li>
+          <a class="conversacion-item{% if c.sin_leer %} conversacion-item--sin-leer{% endif %}" href="{% url 'contacto:conversacion' codigo=c.codigo %}">
+            <img class="conversacion-item__foto" src="{{ c.producto.url_miniatura }}" alt="" aria-hidden="true" width="56" height="56" loading="lazy">
+            <span class="conversacion-item__cuerpo">
+              <span class="conversacion-item__titulo">{{ item.con_quien }}</span>
+              <span class="conversacion-item__producto">Sobre «{{ c.producto.nombre }}»</span>
+              <span class="conversacion-item__ultimo">{% if c.ultimo_contenido %}{% if item.propio %}Tú: {% endif %}{{ c.ultimo_contenido|truncatechars:80 }}{% else %}Sin mensajes todavía{% endif %}</span>
+            </span>
+            <span class="conversacion-item__meta">
+              {% if c.ultima_fecha %}<time datetime="{{ c.ultima_fecha|date:'c' }}">{{ c.ultima_fecha|date:"j M, H:i"|lower }}</time>{% endif %}
+              {% if c.sin_leer %}<span class="insignia-sin-leer">{{ c.sin_leer }} sin leer</span>{% endif %}
+            </span>
+          </a>
+        </li>
+      {% endwith %}{% endfor %}
+    </ul>
+  {% else %}
+    <div class="estado-vacio">
+      <p>Todavía no tienes conversaciones.</p>
+      <p>Abre un producto del catálogo y pulsa «Contactar» para escribirle a su emprendedor.</p>
+      <p><a class="boton boton--primario" href="{% url 'catalogo:listado' %}">Explorar el catálogo</a></p>
+    </div>
+  {% endif %}
+</div></div>
+{% endblock %}

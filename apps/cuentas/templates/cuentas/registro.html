@@ -4,12 +4,13 @@
 
 {% block formulario %}
 <h1 class="titulo-linea">Crea tu cuenta</h1>
-<p class="texto-secundario">¿Ya tienes cuenta? <a href="{% url 'cuentas:ingresar' %}">Inicia sesión</a></p>
+<p class="texto-secundario">¿Ya tienes cuenta? <a href="{% url 'cuentas:ingresar' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Inicia sesión</a></p>
 
 {% include "cuentas/_errores.html" %}
 
 <form class="formulario" method="post" action="{% url 'cuentas:registro' %}" novalidate>
   {% csrf_token %}
+  {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
   {% include "cuentas/_campo.html" with campo=form.correo_institucional %}
 
   <fieldset class="grupo{% if form.rol.errors %} grupo--error{% endif %}" {% if form.rol.errors %}aria-describedby="{{ form.rol.auto_id }}_error"{% endif %}>

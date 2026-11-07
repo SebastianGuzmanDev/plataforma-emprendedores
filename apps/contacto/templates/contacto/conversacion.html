@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load portafolio %}
+{% block titulo %}{{ con_quien }} · Mensajes · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="chat">
+  <p class="migas"><a href="{% url 'contacto:lista' %}">Mis mensajes</a></p>
+  <h1 class="titulo-linea">{{ con_quien }}</h1>
+
+  <div class="chat__producto">
+    <img src="{{ producto.url_miniatura }}" alt="{{ producto.nombre }}" width="64" height="64">
+    <div>
+      {% if producto.es_visible_en_catalogo %}
+        <a href="{% url 'catalogo:detalle' codigo=producto.codigo %}">{{ producto.nombre }}</a>
+      {% else %}
+        <span>{{ producto.nombre }}</span> <span class="texto-pequeno">(ya no está en el catálogo)</span>
+      {% endif %}
+      <p class="texto-pequeno">{{ producto.precio_referencia|pesos }} · {{ producto.get_estado_display }}</p>
+    </div>
+  </div>
+
+  <div class="chat__actualizar">
+    <p class="texto-pequeno">Los mensajes no llegan en tiempo real: pulsa «Actualizar» para ver respuestas nuevas.</p>
+    <a class="boton boton--secundario boton--compacto" href="{% url 'contacto:conversacion' codigo=conversacion.codigo %}">Actualizar</a>
+  </div>
+
+  {% if mensajes_conversacion %}
+    <ol class="chat__mensajes" aria-label="Historial de la conversación">
+      {% for mensaje in mensajes_conversacion %}
+        <li class="mensaje {% if mensaje.autor_id == user.pk %}mensaje--propio{% else %}mensaje--ajeno{% endif %}"{% if forloop.last %} id="ultimo"{% endif %}>
+          <p class="mensaje__autor">{% if mensaje.autor_id == user.pk %}Tú{% else %}{{ con_quien }}{% endif %}</p>
+          <div class="mensaje__texto">{{ mensaje.contenido|linebreaksbr }}</div>
+          <time class="mensaje__hora" datetime="{{ mensaje.fecha_envio|date:'c' }}">{{ mensaje.fecha_envio|date:"j M, H:i"|lower }}</time>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <div class="estado-vacio">
+      <p>Escribe tu primer mensaje para preguntar por «{{ producto.nombre }}» y acordar la entrega.</p>
+    </div>
+  {% endif %}
+
+  {% include "cuentas/_errores.html" %}
+  <form class="formulario chat__formulario" method="post" novalidate>
+    {% csrf_token %}
+    {% include "cuentas/_campo.html" with campo=form.contenido %}
+    <button type="submit" class="boton boton--primario">Enviar</button>
+  </form>
+</div></div>
+{% endblock %}
