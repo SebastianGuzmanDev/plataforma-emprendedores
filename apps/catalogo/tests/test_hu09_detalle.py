@@ -69,12 +69,12 @@ class HU09DetalleTests(TestCase):
 
 
 class HU09BotonContactarTests(TestCase):
-    """A3: el botón «Contactar» y su comportamiento según la sesión (HU-11 lo completa en E4)."""
+    """A3: el botón «Contactar» según la sesión. Desde E4 abre la conversación (HU-11)."""
 
     def setUp(self):
         self.comida, _ = emprendimientos_de_prueba()
         self.producto = crear_producto(self.comida, "Arepa de queso")
-        self.url_contactar = reverse("catalogo:contactar", kwargs={"codigo": self.producto.codigo})
+        self.url_iniciar = reverse("contacto:iniciar", kwargs={"codigo_producto": self.producto.codigo})
 
     def test_sin_sesion_contactar_pide_iniciar_sesion_y_regresa_al_producto(self):
         """A3: sin sesión → pedir iniciar sesión; luego continúa en el producto."""
@@ -82,29 +82,20 @@ class HU09BotonContactarTests(TestCase):
         destino = f'{reverse("cuentas:ingresar")}?next={url_detalle(self.producto)}'
         self.assertContains(respuesta, f'href="{destino}"')
 
-    def test_con_sesion_contactar_lleva_al_contacto_con_el_emprendedor(self):
+    def test_con_sesion_contactar_inicia_la_conversacion(self):
         crear_usuario(correo=CORREO_COMPRADOR)
         entrar(self.client, CORREO_COMPRADOR)
-        self.assertContains(self.client.get(url_detalle(self.producto)), f'href="{self.url_contactar}"')
-        contacto = self.client.get(self.url_contactar)
-        self.assertEqual(contacto.status_code, 200)
-        self.assertContains(contacto, "Arepas Doña Rosa")
+        self.assertContains(self.client.get(url_detalle(self.producto)), f'action="{self.url_iniciar}"')
 
     def test_rn18_en_un_producto_propio_no_aparece_contactar(self):
         """RN-18 · A3: si el producto es del propio usuario no se muestra el botón."""
         entrar(self.client, CORREO_EMPRENDEDOR_A)
         respuesta = self.client.get(url_detalle(self.producto))
-        self.assertNotContains(respuesta, self.url_contactar)
+        self.assertNotContains(respuesta, self.url_iniciar)
         self.assertNotContains(respuesta, ">Contactar<")
         self.assertContains(respuesta, "Este producto es tuyo")
         self.assertContains(respuesta, reverse("emprendimiento:editar", kwargs={"codigo": self.producto.codigo}))
-        # Tampoco puede contactarse a sí mismo escribiendo la ruta.
-        self.assertRedirects(self.client.get(self.url_contactar), url_detalle(self.producto))
 
     def test_otro_emprendedor_si_ve_contactar(self):
         entrar(self.client, CORREO_EMPRENDEDOR_B)
-        self.assertContains(self.client.get(url_detalle(self.producto)), f'href="{self.url_contactar}"')
-
-    def test_la_ruta_de_contacto_exige_sesion(self):
-        respuesta = self.client.get(self.url_contactar)
-        self.assertRedirects(respuesta, f'{reverse("cuentas:ingresar")}?next={self.url_contactar}')
+        self.assertContains(self.client.get(url_detalle(self.producto)), f'action="{self.url_iniciar}"')

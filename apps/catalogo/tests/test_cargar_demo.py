@@ -38,6 +38,18 @@ class CargarDemoTests(MediaTemporalMixin, TestCase):
         self.assertIn("demo.comprador@amigo.edu.co", salida)
 
     @override_settings(DEBUG=True)
+    def test_crea_conversaciones_de_demostracion_con_mensajes_sin_leer(self):
+        from apps.contacto.models import Conversacion
+        from apps.contacto.servicios import mensajes_sin_leer
+
+        self.cargar("--emprendimientos", "3", "--productos", "9", "--conversaciones", "2", "--solo-disponibles")
+        self.assertEqual(Conversacion.objects.count(), 2)
+        comprador = Usuario.objects.get(correo_institucional="demo.comprador@amigo.edu.co")
+        self.assertTrue(all(c.comprador == comprador for c in Conversacion.objects.all()))
+        emprendedor = Usuario.objects.get(correo_institucional="demo.emprendedor02@amigo.edu.co")
+        self.assertGreater(mensajes_sin_leer(emprendedor), 0)
+
+    @override_settings(DEBUG=True)
     def test_solo_disponibles_deja_todos_los_productos_visibles(self):
         self.cargar("--emprendimientos", "2", "--productos", "6", "--solo-disponibles")
         self.assertEqual(Producto.objects.visibles_en_catalogo().filter(estado="DISPONIBLE").count(), 6)
