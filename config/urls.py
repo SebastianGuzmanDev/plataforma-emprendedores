@@ -21,6 +21,7 @@ urlpatterns = [
     path("mensajes/", include("apps.contacto.urls")),
     # E5 · Inventario
     path("inventario/", include("apps.inventario.urls")),
+    path("finanzas/", include("apps.finanzas.urls")),
 ]
 
 if settings.DEBUG:

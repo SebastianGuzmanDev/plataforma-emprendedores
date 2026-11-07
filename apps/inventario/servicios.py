@@ -6,7 +6,10 @@ registrarMovimiento(producto, tipo, cantidad) → obtenerExistencias() → desco
 from dataclasses import dataclass
 
 from django.db import transaction
+from django.utils import timezone
 
+from apps.finanzas.models import CategoriaGasto
+from apps.finanzas.servicios import registrar_gasto
 from apps.perfil_productos.models import EstadoProducto
 
 from .models import Insumo, MovimientoInventario, TipoMovimiento
@@ -89,6 +92,19 @@ def definir_umbral(producto, umbral):
     return producto
 
 
-def registrar_insumo(propietario, *, nombre, cantidad, costo):
-    """HU-18 · CU-18 · RN-12."""
-    return Insumo.objects.create(propietario=propietario, nombre=nombre.strip(), cantidad=cantidad, costo=costo)
+@transaction.atomic
+def registrar_insumo(propietario, *, nombre, cantidad, costo, registrar_como_gasto=False):
+    """
+    HU-18 · CU-18 · RN-12.
+
+    CC-10 (E6): si se pide, el costo queda además como gasto de materia prima con la
+    fecha de hoy (HU-20). Un insumo de costo 0 no genera gasto (RN-13: monto > 0).
+    Devuelve (insumo, gasto o None); ambos se guardan juntos o ninguno.
+    """
+    insumo = Insumo.objects.create(propietario=propietario, nombre=nombre.strip(), cantidad=cantidad, costo=costo)
+    gasto = None
+    if registrar_como_gasto and costo > 0:
+        gasto = registrar_gasto(
+            propietario, monto=costo, categoria=CategoriaGasto.MATERIA_PRIMA, fecha=timezone.localdate()
+        )
+    return insumo, gasto
