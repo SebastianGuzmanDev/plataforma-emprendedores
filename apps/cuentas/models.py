@@ -4,6 +4,8 @@ Capa de datos del módulo E1 · Cuentas y acceso.
 Clase `Usuario` y enumeración `Rol` del modelo de dominio (Entregable 2, 2.1):
 correoInstitucional, contrasenaCifrada, rol, avisoPrivacidadAceptado y activo.
 """
+import uuid
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.db.models.functions import Lower
@@ -35,6 +37,9 @@ class Usuario(AbstractBaseUser):
     aviso_privacidad_version = models.CharField("versión del aviso aceptado", max_length=10, blank=True)
     aviso_privacidad_fecha = models.DateTimeField("fecha de aceptación del aviso", null=True, blank=True)
     activo = models.BooleanField("activo", default=True)
+    # E7: identificador aleatorio para las rutas de administración; ninguna URL lleva el id
+    # secuencial de una cuenta (RNF-05). No es un dato personal.
+    codigo = models.UUIDField("código", default=uuid.uuid4, unique=True, editable=False)
 
     objects = UsuarioManager()
 

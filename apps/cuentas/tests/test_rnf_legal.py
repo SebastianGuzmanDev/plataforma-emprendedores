@@ -27,6 +27,7 @@ CAMPOS_PERMITIDOS = {
     "aviso_privacidad_version",
     "aviso_privacidad_fecha",
     "activo",
+    "codigo",  # E7: identificador aleatorio para las rutas de administración (no es dato personal)
 }
 
 
