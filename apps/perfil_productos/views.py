@@ -33,7 +33,8 @@ def _producto_propio(request, codigo):
 def panel(request):
     """Inicio del emprendedor: estado del perfil y su portafolio."""
     emprendimiento = servicios.obtener_emprendimiento(request.user)
-    productos = list(emprendimiento.productos.all()) if emprendimiento else []
+    # E7: las desactivaciones del administrador se precargan para mostrar el motivo (CC-11).
+    productos = list(emprendimiento.productos.prefetch_related("desactivaciones")) if emprendimiento else []
     return render(
         request,
         "perfil_productos/panel.html",

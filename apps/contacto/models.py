@@ -50,6 +50,9 @@ class Conversacion(models.Model):
         """Identifica al comprador ante el emprendedor sin mostrar su correo (RNF-06)."""
         return self.codigo.hex[:4].upper()
 
+    def otra_persona(self, usuario):
+        return self.emprendedor if usuario.pk == self.comprador_id else self.comprador
+
     def nombre_de_la_otra_persona(self, usuario):
         if usuario.pk == self.comprador_id:
             return self.producto.emprendimiento.nombre

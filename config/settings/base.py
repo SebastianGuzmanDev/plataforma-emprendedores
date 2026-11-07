@@ -72,6 +72,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.cuentas.context_processors.plataforma",
                 "apps.contacto.context_processors.mensajes_sin_leer",
+                "apps.administracion.context_processors.avisos_administracion",
             ],
         },
     },

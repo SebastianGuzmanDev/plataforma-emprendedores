@@ -19,7 +19,7 @@ class PerfilRequerido(Exception):
 
 def obtener_emprendimiento(emprendedor):
     """S3 · obtenerEmprendimiento(emprendedor)."""
-    return Emprendimiento.objects.select_related("categoria").filter(propietario=emprendedor).first()
+    return Emprendimiento.objects.select_related("categoria", "propietario").filter(propietario=emprendedor).first()
 
 
 def guardar_perfil(form, emprendedor):

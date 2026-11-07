@@ -75,8 +75,13 @@ class Emprendimiento(models.Model):
 
 class ProductoQuerySet(models.QuerySet):
     def visibles_en_catalogo(self):
-        """RN-09 · Contrato con el módulo Catálogo (E3): oculta los productos desactivados."""
-        return self.filter(estado__in=ESTADOS_VISIBLES_EN_CATALOGO).select_related("emprendimiento__categoria")
+        """
+        RN-09 · Contrato con el módulo Catálogo (E3): oculta los productos desactivados.
+        RN-19 (E7): también los de una cuenta desactivada por el administrador.
+        """
+        return self.filter(
+            estado__in=ESTADOS_VISIBLES_EN_CATALOGO, emprendimiento__propietario__activo=True
+        ).select_related("emprendimiento__categoria")
 
 
 class Producto(models.Model):
@@ -122,7 +127,8 @@ class Producto(models.Model):
 
     @property
     def es_visible_en_catalogo(self):
-        return self.estado in ESTADOS_VISIBLES_EN_CATALOGO
+        """Misma regla que visibles_en_catalogo(), para un producto ya cargado."""
+        return self.estado in ESTADOS_VISIBLES_EN_CATALOGO and self.emprendimiento.propietario.activo
 
     # ------------------------------------------------------------ Inventario (E5, diagrama C2)
     def obtener_existencias(self):
