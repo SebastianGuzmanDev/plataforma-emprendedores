@@ -9,8 +9,8 @@ Proyecto del curso **Ingeniería de Software** · Jerónimo Álvarez Calvachi y 
 | E1 Cuentas y acceso (HU-01 a HU-03) | `apps/cuentas` | Entregada ([documento](docs/epica-1/EPICA-1.md)) |
 | E2 Perfil y productos (HU-04 a HU-06) | `apps/perfil_productos` | Entregada ([documento](docs/epica-2/EPICA-2.md)) |
 | E3 Catálogo (HU-07 a HU-10) | `apps/catalogo` | Entregada ([documento](docs/epica-3/EPICA-3.md)) |
-| E4 Contacto por chat (HU-11 a HU-14) | `apps/contacto` | **Entregada, en revisión** ([documento](docs/epica-4/EPICA-4.md)) |
-| E5 Inventario (HU-15 a HU-18) | — | Pendiente |
+| E4 Contacto por chat (HU-11 a HU-14) | `apps/contacto` | Entregada ([documento](docs/epica-4/EPICA-4.md)) |
+| E5 Inventario (HU-15 a HU-18) | `apps/inventario` | **Entregada, en revisión** ([documento](docs/epica-5/EPICA-5.md)) |
 | E6 Finanzas (HU-19 a HU-21) | — | Pendiente |
 | E7 Administración (HU-22) | — | Pendiente |
 
@@ -32,7 +32,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Para tener contenido de demostración (10 emprendimientos, 100 productos y 3 conversaciones, cuentas `demo.…@amigo.edu.co`, contraseña `Clave-Segura-2026`):
+Para tener contenido de demostración (10 emprendimientos, 100 productos con inventario, insumos y 3 conversaciones, cuentas `demo.…@amigo.edu.co`, contraseña `Clave-Segura-2026`):
 
 ```bash
 python manage.py cargar_demo --limpiar
@@ -52,7 +52,7 @@ python manage.py promover_administrador correo@amigo.edu.co
 python manage.py test -v 2
 ```
 
-Resultado esperado: `Ran 273 tests` y `OK` (90 de E1, 78 de E2, 55 de E3 y 50 de E4). Las baterías completas (automáticas y manuales) con sus criterios de aprobación están en [docs/epica-1/EPICA-1.md](docs/epica-1/EPICA-1.md#6-batería-de-pruebas-de-validación), [docs/epica-2/EPICA-2.md](docs/epica-2/EPICA-2.md#7-batería-de-pruebas-de-validación), [docs/epica-3/EPICA-3.md](docs/epica-3/EPICA-3.md#6-batería-de-pruebas-de-validación) y [docs/epica-4/EPICA-4.md](docs/epica-4/EPICA-4.md#8-batería-de-pruebas-de-validación).
+Resultado esperado: `Ran 317 tests` y `OK` (90 de E1, 78 de E2, 56 de E3, 50 de E4 y 43 de E5). Las baterías completas (automáticas y manuales) con sus criterios de aprobación están en [docs/epica-1/EPICA-1.md](docs/epica-1/EPICA-1.md#6-batería-de-pruebas-de-validación), [docs/epica-2/EPICA-2.md](docs/epica-2/EPICA-2.md#7-batería-de-pruebas-de-validación), [docs/epica-3/EPICA-3.md](docs/epica-3/EPICA-3.md#6-batería-de-pruebas-de-validación), [docs/epica-4/EPICA-4.md](docs/epica-4/EPICA-4.md#8-batería-de-pruebas-de-validación) y [docs/epica-5/EPICA-5.md](docs/epica-5/EPICA-5.md#7-batería-de-pruebas-de-validación).
 
 Verificación de la configuración de producción (RNF-04):
 
@@ -110,6 +110,9 @@ apps/catalogo/          E3 · Catálogo
 apps/contacto/          E4 · Contacto por chat
   models.py             Conversacion y Mensaje
   servicios.py          iniciar_conversacion, enviar_mensaje y obtener_mensajes (secuencia S5)
+apps/inventario/        E5 · Inventario
+  servicios.py          registrar_movimiento (secuencia S6), existencias, umbral e insumos
+  reglas.py             RN-10 a RN-12
 templates/              Plantillas comunes, aviso de privacidad y páginas de error
 static/css/marca.css    Tokens de color y tipografía del manual de identidad
 static/img/             Logotipo institucional (vector) y elemento gráfico

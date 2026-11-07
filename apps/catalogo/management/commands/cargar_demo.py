@@ -11,6 +11,7 @@ funciona con DEBUG activo, salvo que se use --forzar (nunca con datos reales).
 """
 import io
 import random
+from decimal import Decimal
 import unicodedata
 
 from django.conf import settings
@@ -21,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from apps.contacto import servicios as contacto
 from apps.cuentas.models import Rol, Usuario
+from apps.inventario import servicios as inventario
 from apps.cuentas.servicios import registrar_usuario
 from apps.perfil_productos import servicios
 from apps.perfil_productos.models import Categoria, Emprendimiento
@@ -47,6 +49,13 @@ PRODUCTOS = {
     "Videojuegos": ["Juego indie digital", "Control reparado", "Cartucho retro", "Soporte para control"],
     "Ocio": ["Alquiler de Catan", "Juego de cartas UNO", "Rompecabezas 1000 piezas", "Dominó"],
     "Otros": ["Paquete de stickers", "Agenda 2027", "Separadores de libro", "Camiseta estampada"],
+}
+INSUMOS = {
+    "Comida": [("Harina de maíz (kg)", "5", 18000), ("Queso campesino (lb)", "3", 21000), ("Azúcar (kg)", "2", 7000)],
+    "Artesanías": [("Hilo encerado (rollos)", "4", 16000), ("Arcilla (kg)", "2,5", 12500)],
+    "Videojuegos": [("Repuestos de joystick", "6", 30000)],
+    "Ocio": [("Fundas para cartas", "10", 15000)],
+    "Otros": [("Papel adhesivo (pliegos)", "20", 24000), ("Tinta (cartuchos)", "2", 60000)],
 }
 COLORES = [(232, 200, 150), (210, 180, 140), (190, 220, 210), (240, 210, 160), (200, 210, 235), (235, 200, 210)]
 
@@ -147,8 +156,20 @@ class Command(BaseCommand):
                 suerte = 1 if solo_disponibles else aleatorio.random()
                 if suerte < 0.10:
                     servicios.marcar_agotado(producto)
+                    inventario.registrar_existencias(producto, 0)
                 elif suerte < 0.15:
                     servicios.desactivar_producto(producto)
+                elif suerte < 0.80:  # E5: la mayoría lleva inventario; algunos con stock bajo
+                    inventario.registrar_existencias(producto, aleatorio.randrange(1, 31))
+                    if aleatorio.random() < 0.4:
+                        inventario.definir_umbral(producto, 5)
+
+            for usuario, perfil in creados:
+                if not usuario.insumos.exists():
+                    for nombre, cantidad, costo in INSUMOS[perfil.categoria.nombre]:
+                        inventario.registrar_insumo(
+                            usuario, nombre=nombre, cantidad=Decimal(cantidad.replace(",", ".")), costo=costo
+                        )
 
             # E4: el comprador escribe a varios emprendimientos; los emprendedores tienen mensajes sin leer.
             charlas = 0

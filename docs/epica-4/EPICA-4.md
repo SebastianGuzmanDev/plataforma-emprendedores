@@ -2,7 +2,7 @@
 
 **Proyecto:** Emprendi Amigos (MVP) · Universidad Católica Luis Amigó
 **Fuentes:** Entregable 1 (HU-11 a HU-14, RF-13 a RF-16, RNF-02, RNF-10, riesgo R3), Entregable 2 (CU-11 a CU-14, diagramas A3, S5 y C1, clases `Conversacion` y `Mensaje`, reglas RN-16 a RN-18, decisión D3) y *Manual de Identidad Visual* versión 02.
-**Estado:** entregada para revisión. No se ha iniciado la Épica 5.
+**Estado:** aprobada el 07/11/2026, junto con CC-08 (el registro conserva el producto de origen). Queda pendiente aplicar el protocolo de RNF-02 con personas (sección 4.2).
 
 ---
 

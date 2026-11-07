@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load portafolio %}
+{% block titulo %}Inventario de {{ producto.nombre }} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <p class="migas"><a href="{% url 'inventario:panel' %}">Inventario</a></p>
+  <h1 class="titulo-linea">Inventario de «{{ producto.nombre }}»</h1>
+
+  <div class="resumen-inventario">
+    <p class="resumen-inventario__cifra">
+      {% if producto.existencias is None %}Sin registrar{% else %}{{ producto.existencias }} <span class="texto-pequeno">unidad{{ producto.existencias|pluralize:"es" }}</span>{% endif %}
+    </p>
+    {% include "perfil_productos/_estado.html" %}
+    {% if producto.tiene_stock_bajo %}<span class="estado estado--alerta">Stock bajo</span>{% endif %}
+  </div>
+
+  {% if producto.existencias is None %}
+    <section class="bloque" aria-labelledby="titulo-registrar">
+      <h2 id="titulo-registrar">Registrar existencias</h2>
+      <p>Indica cuántas unidades tienes hoy. Después las actualizarás con entradas y salidas.</p>
+      {% include "cuentas/_errores.html" with form=existencias_form %}
+      <form class="formulario" method="post" action="{% url 'inventario:existencias' codigo=producto.codigo %}" novalidate>
+        {% csrf_token %}
+        {% include "cuentas/_campo.html" with campo=existencias_form.existencias %}
+        <button type="submit" class="boton boton--primario">Registrar existencias</button>
+      </form>
+    </section>
+  {% else %}
+    <section class="bloque" aria-labelledby="titulo-movimiento">
+      <h2 id="titulo-movimiento">Registrar una entrada o una salida</h2>
+      {% include "cuentas/_errores.html" with form=movimiento_form %}
+      <form class="formulario" method="post" action="{% url 'inventario:movimiento' codigo=producto.codigo %}" novalidate>
+        {% csrf_token %}
+        <fieldset class="grupo{% if movimiento_form.tipo.errors %} grupo--error{% endif %}">
+          <legend>{{ movimiento_form.tipo.label }}</legend>
+          <div class="opciones-categoria">
+            {% for opcion in movimiento_form.tipo %}<label class="opcion-categoria" for="{{ opcion.id_for_label }}">{{ opcion.tag }} <span>{{ opcion.choice_label }}</span></label>{% endfor %}
+          </div>
+          {% for error in movimiento_form.tipo.errors %}<p class="campo__error"><span class="icono-alerta" aria-hidden="true">!</span><span>{{ error }}</span></p>{% endfor %}
+        </fieldset>
+        {% include "cuentas/_campo.html" with campo=movimiento_form.cantidad %}
+        <button type="submit" class="boton boton--primario">Registrar movimiento</button>
+      </form>
+    </section>
+  {% endif %}
+
+  <section class="bloque" aria-labelledby="titulo-umbral">
+    <h2 id="titulo-umbral">Alerta de stock bajo</h2>
+    {% include "cuentas/_errores.html" with form=umbral_form %}
+    <form class="formulario" method="post" action="{% url 'inventario:umbral' codigo=producto.codigo %}" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_campo.html" with campo=umbral_form.umbral_stock_bajo %}
+      <button type="submit" class="boton boton--secundario">Guardar umbral</button>
+    </form>
+  </section>
+
+  <section class="bloque" aria-labelledby="titulo-historial">
+    <h2 id="titulo-historial">Últimos movimientos</h2>
+    {% if movimientos %}
+      <ul class="lista-simple">
+        {% for m in movimientos %}<li><strong>{{ m.get_tipo_display }}</strong> de {{ m.cantidad }} · <time datetime="{{ m.fecha|date:'c' }}">{{ m.fecha|date:"j M Y, H:i"|lower }}</time></li>{% endfor %}
+      </ul>
+    {% else %}
+      <p>Sin movimientos todavía.</p>
+    {% endif %}
+  </section>
+</div></div>
+{% endblock %}

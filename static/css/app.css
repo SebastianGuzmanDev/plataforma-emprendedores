@@ -1393,3 +1393,32 @@ p {
   justify-self: end;
   min-width: 8rem;
 }
+
+/* ================================================================== E5 · Inventario */
+.aviso--alerta {
+  border-left-color: var(--color-acento);
+  border-color: var(--color-acento);
+}
+
+.estado--alerta {
+  margin-left: 0.25rem;
+  border-color: var(--color-acento);
+  background: var(--color-acento);
+  color: var(--color-texto);
+}
+
+.resumen-inventario {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.resumen-inventario__cifra {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--color-primario);
+}

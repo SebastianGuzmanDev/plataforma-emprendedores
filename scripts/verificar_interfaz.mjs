@@ -42,6 +42,8 @@ const PAGINAS_EMPRENDEDOR = [
   ["e2-perfil", "/emprendimiento/perfil/"],
   ["e2-publicar", "/emprendimiento/productos/nuevo/"],
   ["e2-vista-previa", "/emprendimiento/vista-previa/"],
+  ["e5-inventario", "/inventario/"],
+  ["e5-nuevo-insumo", "/inventario/insumos/nuevo/"],
 ];
 const carpeta = new URL(`./capturas/${navegador}/`, import.meta.url);
 mkdirSync(carpeta, { recursive: true });
@@ -119,6 +121,14 @@ for (const ancho of ANCHOS) {
       await revisar(privada, nombre, ancho);
       await privada.screenshot({ path: new URL(`${nombre}-${ancho}.png`, carpeta).pathname, fullPage: true });
     }
+    // Inventario de un producto (HU-15 a HU-17)
+    await privada.goto(BASE_URL + "/inventario/");
+    const gestionar = await privada.$(".item-producto__acciones a");
+    if (gestionar) {
+      await Promise.all([privada.waitForNavigation(), gestionar.click()]);
+      await revisar(privada, "e5-producto", ancho);
+      await privada.screenshot({ path: new URL(`e5-producto-${ancho}.png`, carpeta).pathname, fullPage: true });
+    }
     // Estado con errores de la publicación (HU-05, escenario 3) y del perfil (HU-04, escenario 2)
     await privada.goto(BASE_URL + "/emprendimiento/productos/nuevo/");
     await privada.fill("#id_nombre", "Arepa de prueba");
@@ -156,6 +166,6 @@ if (fallos.length) {
   console.error(`\n${fallos.length} problema(s):\n- ${fallos.join("\n- ")}`);
   process.exit(1);
 }
-const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 1 : 0) +
+const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 2 : 0) +
   (process.env.COMPRADOR_CORREO ? 2 : 0));
 console.log(`\nInterfaz verificada en ${navegador}: ${vistas} vistas sin problemas.`);

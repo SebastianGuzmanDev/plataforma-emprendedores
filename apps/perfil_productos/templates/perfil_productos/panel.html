@@ -9,6 +9,7 @@
     {% if emprendimiento %}
       <div class="acciones acciones--sin-margen">
         <a class="boton boton--primario" href="{% url 'emprendimiento:publicar' %}">Publicar producto</a>
+        <a class="boton boton--secundario" href="{% url 'inventario:panel' %}">Inventario</a>
         <a class="boton boton--secundario" href="{% url 'emprendimiento:vista_previa' %}">Ver como comprador</a>
       </div>
     {% endif %}
@@ -44,8 +45,9 @@
               <img class="item-producto__foto" src="{{ producto.foto.url }}" alt="{{ producto.nombre }}" width="88" height="88" loading="lazy">
               <div class="item-producto__datos">
                 <p class="item-producto__nombre">{{ producto.nombre }}</p>
-                <p>{{ producto.precio_referencia|pesos }}</p>
+                <p>{{ producto.precio_referencia|pesos }}{% if producto.existencias is not None %} · {{ producto.existencias }} en existencia{% endif %}</p>
                 {% include "perfil_productos/_estado.html" %}
+                {% if producto.tiene_stock_bajo %}<span class="estado estado--alerta">Stock bajo</span>{% endif %}
               </div>
               <div class="item-producto__acciones">
                 <a class="boton boton--secundario boton--compacto" href="{% url 'emprendimiento:editar' codigo=producto.codigo %}">Editar<span class="visualmente-oculto"> {{ producto.nombre }}</span></a>

@@ -94,6 +94,9 @@ class Producto(models.Model):
     estado = models.CharField(
         "estado", max_length=11, choices=EstadoProducto.choices, default=EstadoProducto.DISPONIBLE
     )
+    # E5 · Inventario. Vacío = el emprendedor aún no lleva inventario de este producto.
+    existencias = models.PositiveIntegerField("existencias", null=True, blank=True)
+    umbral_stock_bajo = models.PositiveIntegerField("umbral de stock bajo", null=True, blank=True)
 
     objects = ProductoQuerySet.as_manager()
 
@@ -121,6 +124,30 @@ class Producto(models.Model):
     def es_visible_en_catalogo(self):
         return self.estado in ESTADOS_VISIBLES_EN_CATALOGO
 
+    # ------------------------------------------------------------ Inventario (E5, diagrama C2)
+    def obtener_existencias(self):
+        """C2 · obtenerExistencias(). None si aún no se registraron (HU-15)."""
+        return self.existencias
+
+    def tiene_stock_bajo(self):
+        """C2 · tieneStockBajo() · RN-11: existencias < umbral. En el umbral o por encima, no hay alerta."""
+        if self.existencias is None or self.umbral_stock_bajo is None:
+            return False
+        return self.existencias < self.umbral_stock_bajo
+
+    def descontar(self, cantidad):
+        """C2 · descontar(cantidad) solo si cantidad ≤ existencias (RN-10). Es atómico en la base de datos."""
+        actualizados = Producto.objects.filter(pk=self.pk, existencias__gte=cantidad).update(
+            existencias=models.F("existencias") - cantidad
+        )
+        self.refresh_from_db(fields=["existencias"])
+        return bool(actualizados)
+
+    def reponer(self, cantidad):
+        """Entrada de inventario (RF-18)."""
+        Producto.objects.filter(pk=self.pk).update(existencias=models.F("existencias") + cantidad)
+        self.refresh_from_db(fields=["existencias"])
+
     # ------------------------------------------------------------ Diagrama ES1 (con CC-02)
     def validar_edicion(self):
         """ES1 + CC-02: se editan los productos disponibles y los agotados; editar no cambia el estado."""
@@ -143,6 +170,10 @@ class Producto(models.Model):
             )
         if self.estado != EstadoProducto.AGOTADO:
             raise TransicionNoPermitida("Este producto ya está disponible.")
+        if self.existencias == 0:  # E5: con inventario en 0 no puede ofrecerse como disponible
+            raise TransicionNoPermitida(
+                "Este producto no tiene existencias: registra una entrada de inventario para volver a ofrecerlo."
+            )
         self.estado = EstadoProducto.DISPONIBLE
 
     def desactivar(self):
