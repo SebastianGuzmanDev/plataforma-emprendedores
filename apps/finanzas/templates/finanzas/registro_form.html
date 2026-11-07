@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar {{ tipo }} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <p class="migas"><a href="{% url 'finanzas:resumen' %}">Finanzas</a></p>
+  <h1 class="titulo-linea">Registrar un {{ tipo }}</h1>
+  {% if tipo == "ingreso" %}
+    <p>Anota el dinero que recibiste, por ejemplo por tus ventas del día.</p>
+  {% else %}
+    <p>Anota el dinero que pagaste para tu emprendimiento y en qué lo gastaste.</p>
+  {% endif %}
+  {% include "cuentas/_errores.html" %}
+  <form class="formulario formulario--separado" method="post" novalidate>
+    {% csrf_token %}
+    {% include "cuentas/_campo.html" with campo=form.monto %}
+    {% if form.categoria %}
+      <fieldset class="grupo{% if form.categoria.errors %} grupo--error{% endif %}" {% if form.categoria.errors %}aria-describedby="{{ form.categoria.auto_id }}_error"{% endif %}>
+        <legend>{{ form.categoria.label }}</legend>
+        <div class="opciones-categoria">
+          {% for opcion in form.categoria %}
+            <label class="opcion-categoria" for="{{ opcion.id_for_label }}">{{ opcion.tag }} <span>{{ opcion.choice_label }}</span></label>
+          {% endfor %}
+        </div>
+        {% if form.categoria.errors %}
+          <div id="{{ form.categoria.auto_id }}_error">
+            {% for error in form.categoria.errors %}<p class="campo__error"><span class="icono-alerta" aria-hidden="true">!</span><span>{{ error }}</span></p>{% endfor %}
+          </div>
+        {% endif %}
+      </fieldset>
+    {% endif %}
+    {% include "cuentas/_campo.html" with campo=form.fecha %}
+    <div class="acciones acciones--sin-margen">
+      <button type="submit" class="boton boton--primario">Registrar {{ tipo }}</button>
+      <a class="boton boton--secundario" href="{% url 'finanzas:resumen' %}">Cancelar</a>
+    </div>
+  </form>
+</div></div>
+{% endblock %}
