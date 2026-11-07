@@ -74,9 +74,9 @@ class AvisoPrivacidadTests(TestCase):
     def test_rnf06_el_aviso_informa_el_tratamiento_del_inventario_y_los_insumos(self):
         from django.conf import settings
 
-        self.assertEqual(settings.AVISO_PRIVACIDAD_VERSION, "1.4")
+        # La versión vigente la fija el último cambio del aviso (1.5 desde E6).
         respuesta = self.client.get(reverse("aviso_privacidad"))
-        for texto in ["Versión 1.4", "Tu inventario", "los insumos que registres", "Solo tú puedes ver tu inventario"]:
+        for texto in [f"Versión {settings.AVISO_PRIVACIDAD_VERSION}", "Tu inventario", "los insumos que registres", "Solo tú puedes ver tu inventario"]:
             with self.subTest(texto=texto):
                 self.assertContains(respuesta, texto)
 
