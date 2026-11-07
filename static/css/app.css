@@ -967,6 +967,12 @@ p {
   padding-block: 0.6rem;
 }
 
+@media (min-width: 36rem) {
+  .datos--compactos div {
+    grid-template-columns: 9.5rem 1fr;
+  }
+}
+
 .seccion--compacta {
   padding-block: 1rem 3rem;
 }
@@ -1008,4 +1014,192 @@ p {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+/* ================================================================== E3 · Catálogo */
+.encabezado-pagina--catalogo {
+  align-items: flex-end;
+}
+
+.buscador {
+  display: grid;
+  gap: 0.35rem;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.buscador label {
+  font-weight: 600;
+}
+
+.buscador__fila {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.buscador input[type="search"] {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--color-borde);
+  border-radius: 0.4rem;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font: inherit;
+}
+
+.buscador input[type="search"]:focus-visible {
+  border-color: var(--color-primario);
+}
+
+.filtro-categorias ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ficha {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.35rem 1rem;
+  border: 2px solid var(--color-borde);
+  border-radius: 999px;
+  color: var(--color-primario);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ficha:hover {
+  border-color: var(--color-primario);
+}
+
+.ficha[aria-current="page"] {
+  border-color: var(--color-primario);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+.resultados__encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.resultados__total {
+  margin: 0;
+}
+
+.estado-vacio {
+  padding: 2rem 1.25rem;
+  border: 1px dashed var(--color-borde);
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.estado-vacio p:last-child {
+  margin-bottom: 0;
+}
+
+/* Toda la tarjeta es clicable sin anidar enlaces */
+.tarjeta-producto {
+  position: relative;
+}
+
+.tarjeta-producto__enlace {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tarjeta-producto__enlace::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.tarjeta-producto:hover .tarjeta-producto__enlace {
+  text-decoration: underline;
+}
+
+.tarjeta-producto:focus-within {
+  outline: 3px solid var(--color-primario);
+  outline-offset: 3px;
+}
+
+.tarjeta-producto__enlace:focus-visible {
+  outline: none;
+}
+
+.tarjeta-producto__emprendimiento {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin: 2rem 0 3rem;
+}
+
+/* Detalle del producto */
+.migas {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
+.detalle-producto {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 48rem) {
+  .detalle-producto {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+    gap: 2.5rem;
+  }
+}
+
+.detalle-producto__foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-borde);
+}
+
+.detalle-producto__precio {
+  margin: 0 0 0.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.detalle-producto__accion {
+  margin: 1.5rem 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.detalle-producto__accion .boton {
+  min-width: 12rem;
+  margin-bottom: 0.75rem;
+}
+
+.detalle-producto__accion p {
+  margin: 0.25rem 0 0;
+}
+
+.detalle-producto__emprendimiento h2 {
+  margin-bottom: 0.5rem;
 }

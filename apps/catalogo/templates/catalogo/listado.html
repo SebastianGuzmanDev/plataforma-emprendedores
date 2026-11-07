@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block titulo %}Catálogo{% if categoria %} · {{ categoria }}{% endif %} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="encabezado-pagina encabezado-pagina--catalogo">
+    <h1 class="titulo-linea">Catálogo</h1>
+    <form class="buscador" method="get" action="{% url 'catalogo:listado' %}" role="search">
+      <label for="id_q">Buscar productos</label>
+      <div class="buscador__fila">
+        <input type="search" id="id_q" name="q" value="{{ consulta }}" maxlength="80" placeholder="Arepa, pulsera, café…" autocomplete="off">
+        {% if categoria %}<input type="hidden" name="categoria" value="{{ categoria.slug }}">{% endif %}
+        <button type="submit" class="boton boton--primario">Buscar</button>
+      </div>
+    </form>
+  </div>
+
+  <nav class="filtro-categorias" aria-label="Filtrar por categoría">
+    <ul>
+      <li><a class="ficha" href="{{ url_todas }}"{% if not categoria %} aria-current="page"{% endif %}>Todas</a></li>
+      {% for opcion in categorias %}
+        <li><a class="ficha" href="{{ opcion.url }}"{% if opcion.actual %} aria-current="page"{% endif %}>{{ opcion.categoria }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <div class="resultados__encabezado">
+    <p class="resultados__total" role="status">
+      {% if total %}
+        <strong>{{ total }} producto{{ total|pluralize }}{% if consulta %} para «{{ consulta }}»{% endif %}{% if categoria %} en {{ categoria }}{% endif %}</strong>
+      {% elif consulta %}
+        No encontramos productos para «{{ consulta }}»{% if categoria %} en la categoría {{ categoria }}{% endif %}.
+      {% elif categoria %}
+        No hay productos en la categoría {{ categoria }}.
+      {% else %}
+        Todavía no hay productos en el catálogo.
+      {% endif %}
+    </p>
+    {% if hay_filtros %}<a href="{% url 'catalogo:listado' %}">Limpiar filtros</a>{% endif %}
+  </div>
+
+  {% if productos %}
+    <ul class="rejilla-productos">
+      {% for producto in productos %}
+        <li>{% if forloop.counter <= 4 %}{% include "perfil_productos/_tarjeta_producto.html" with mostrar_emprendimiento=True carga_inmediata=True %}{% else %}{% include "perfil_productos/_tarjeta_producto.html" with mostrar_emprendimiento=True %}{% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% elif total == 0 and not hay_filtros %}
+    <div class="estado-vacio">
+      <p>Cuando los emprendedores publiquen sus productos, aparecerán aquí.</p>
+      {% if not user.is_authenticated %}<p><a href="{% url 'cuentas:registro' %}">¿Tienes un emprendimiento? Crea tu cuenta</a></p>{% endif %}
+    </div>
+  {% else %}
+    <div class="estado-vacio">
+      <p>Prueba con otra palabra o <a href="{% url 'catalogo:listado' %}">mira todo el catálogo</a>.</p>
+    </div>
+  {% endif %}
+
+  {% if pagina.paginator.num_pages > 1 %}
+    <nav class="paginacion" aria-label="Paginación">
+      {% if url_anterior %}<a class="boton boton--secundario boton--compacto" href="{{ url_anterior }}" rel="prev">Anterior</a>{% endif %}
+      <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+      {% if url_siguiente %}<a class="boton boton--secundario boton--compacto" href="{{ url_siguiente }}" rel="next">Siguiente</a>{% endif %}
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}

@@ -26,7 +26,8 @@
       <p class="acciones"><a class="boton boton--primario" href="{% url 'cuentas:panel_administracion' %}">Ir al panel de administración</a></p>
     {% else %}
       <h2>Qué sigue</h2>
-      <p>Muy pronto podrás explorar el catálogo de emprendimientos de la universidad y contactar a los vendedores.</p>
+      <p>Explora lo que venden los emprendedores de la universidad: filtra por categoría o busca por palabra clave.</p>
+      <p class="acciones"><a class="boton boton--primario" href="{% url 'catalogo:listado' %}">Ver el catálogo</a></p>
     {% endif %}
   </div>
 </div>
