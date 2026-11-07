@@ -42,7 +42,7 @@
   {% if messages %}
     <div class="contenedor mensajes" role="status">
       {% for mensaje in messages %}
-        <div class="aviso aviso--{% if mensaje.tags == 'success' %}exito{% elif mensaje.tags == 'error' %}error{% else %}info{% endif %}">
+        <div class="aviso aviso--{% if mensaje.tags == 'success' %}exito{% elif mensaje.tags == 'error' %}error{% elif mensaje.tags == 'warning' %}alerta{% else %}info{% endif %}">
           <p>{{ mensaje }}</p>
         </div>
       {% endfor %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load portafolio inventario %}
+{% block titulo %}Inventario · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="encabezado-pagina">
+    <h1 class="titulo-linea">Inventario</h1>
+    <div class="acciones acciones--sin-margen">
+      <a class="boton boton--secundario" href="{% url 'emprendimiento:panel' %}">Mi emprendimiento</a>
+    </div>
+  </div>
+
+  <section class="bloque" aria-labelledby="titulo-existencias">
+    <h2 id="titulo-existencias">Existencias de mis productos</h2>
+    {% if not emprendimiento %}
+      <p>Crea el perfil de tu emprendimiento y publica productos para llevar su inventario. <a href="{% url 'emprendimiento:perfil' %}">Crear perfil</a></p>
+    {% elif productos %}
+      <ul class="portafolio">
+        {% for producto in productos %}
+          <li class="item-producto">
+            <img class="item-producto__foto" src="{{ producto.url_miniatura }}" alt="{{ producto.nombre }}" width="88" height="88" loading="lazy">
+            <div class="item-producto__datos">
+              <p class="item-producto__nombre">{{ producto.nombre }}</p>
+              <p>Existencias: {% if producto.existencias is None %}<em>Sin registrar</em>{% else %}<span class="existencias">{{ producto.existencias }}</span>{% endif %}{% if producto.umbral_stock_bajo %} · aviso con menos de {{ producto.umbral_stock_bajo }}{% endif %}</p>
+              {% include "perfil_productos/_estado.html" %}
+              {% if producto.tiene_stock_bajo %}<span class="estado estado--alerta">Stock bajo</span>{% endif %}
+            </div>
+            <div class="item-producto__acciones">
+              <a class="boton boton--secundario boton--compacto" href="{% url 'inventario:producto' codigo=producto.codigo %}">Gestionar<span class="visualmente-oculto"> el inventario de {{ producto.nombre }}</span></a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No tienes productos publicados. <a href="{% url 'emprendimiento:publicar' %}">Publica tu primer producto</a></p>
+    {% endif %}
+  </section>
+
+  <section class="bloque" aria-labelledby="titulo-insumos">
+    <div class="bloque__encabezado">
+      <h2 id="titulo-insumos">Insumos (materia prima)</h2>
+      <a class="boton boton--primario boton--compacto" href="{% url 'inventario:nuevo_insumo' %}">Registrar insumo</a>
+    </div>
+    {% if insumos %}
+      <dl class="datos">
+        {% for insumo in insumos %}
+          <div><dt>{{ insumo.nombre }}</dt><dd>Cantidad: {{ insumo.cantidad|cantidad }} · Costo: {{ insumo.costo|pesos }}</dd></div>
+        {% endfor %}
+      </dl>
+      <p><strong>Costo total de los insumos registrados: {{ costo_total|pesos }}</strong></p>
+    {% else %}
+      <p>Aún no has registrado insumos. Registra la materia prima que compras para saber con qué cuentas y cuánto te cuesta.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

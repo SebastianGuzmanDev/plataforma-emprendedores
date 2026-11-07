@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar insumo · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor"><div class="pagina__cuerpo">
+  <p class="migas"><a href="{% url 'inventario:panel' %}">Inventario</a></p>
+  <h1 class="titulo-linea">Registrar un insumo</h1>
+  <p>Anota la materia prima que compras: nombre, cantidad y lo que te costó.</p>
+  {% include "cuentas/_errores.html" %}
+  <form class="formulario formulario--separado" method="post" novalidate>
+    {% csrf_token %}
+    {% include "cuentas/_campo.html" with campo=form.nombre %}
+    {% include "cuentas/_campo.html" with campo=form.cantidad %}
+    {% include "cuentas/_campo.html" with campo=form.costo %}
+    <div class="acciones acciones--sin-margen">
+      <button type="submit" class="boton boton--primario">Registrar insumo</button>
+      <a class="boton boton--secundario" href="{% url 'inventario:panel' %}">Cancelar</a>
+    </div>
+  </form>
+</div></div>
+{% endblock %}
