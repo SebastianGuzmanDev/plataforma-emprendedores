@@ -2,7 +2,7 @@
 
 **Proyecto:** Emprendi Amigos (MVP) · Universidad Católica Luis Amigó
 **Fuentes:** Entregable 1 (HU-15 a HU-18, RF-17 a RF-20), Entregable 2 (CU-15 a CU-18, diagramas A4, S6, C2 y ES1, atributos `existencias` y `umbralStockBajo` de `Producto`, clases `MovimientoInventario` e `Insumo`, reglas RN-10 a RN-12, supuestos S-3 y S-6, punto abierto B.2) y *Manual de Identidad Visual* versión 02.
-**Estado:** entregada para revisión. No se ha iniciado la Épica 6.
+**Estado:** **aprobada** (07/11/2026), con CC-09. Los puntos de la sección 6.1 se resolvieron en la Épica 6 (CC-10).
 
 ---
 
