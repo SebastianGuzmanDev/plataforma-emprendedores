@@ -31,6 +31,9 @@ const PAGINAS = [
   ["ingresar", "/cuentas/ingresar/"],
   ["recuperar", "/cuentas/recuperar/"],
   ["aviso-privacidad", "/privacidad/"],
+  ["e3-catalogo", "/catalogo/"],
+  ["e3-catalogo-filtro", "/catalogo/?categoria=comida&q=arepa"],
+  ["e3-catalogo-sin-resultados", "/catalogo/?q=zzzz"],
 ];
 const PAGINAS_EMPRENDEDOR = [
   ["e2-panel", "/emprendimiento/"],
@@ -43,6 +46,18 @@ mkdirSync(carpeta, { recursive: true });
 
 const fallos = [];
 const browser = await playwright[navegador].launch();
+
+// Desplaza la página para que carguen las imágenes diferidas antes de la captura.
+async function cargarPerezosas(page) {
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight) {
+      window.scrollTo(0, y);
+      await new Promise((resolver) => setTimeout(resolver, 60));
+    }
+    window.scrollTo(0, 0);
+  });
+  await page.waitForLoadState("networkidle");
+}
 
 async function revisar(page, nombre, ancho) {
   const r = await page.evaluate(() => {
@@ -58,6 +73,7 @@ async function revisar(page, nombre, ancho) {
       pequenos,
     };
   });
+  await cargarPerezosas(page);
   const id = `${nombre} @ ${ancho}px`;
   if (r.desborde > 0) fallos.push(`${id}: desplazamiento horizontal de ${r.desborde}px`);
   if (r.logo < 189) fallos.push(`${id}: logotipo de ${r.logo.toFixed(0)}px (< 190px)`);
@@ -71,6 +87,14 @@ for (const ancho of ANCHOS) {
     await page.goto(BASE_URL + ruta);
     await revisar(page, nombre, ancho);
     await page.screenshot({ path: new URL(`${nombre}-${ancho}.png`, carpeta).pathname, fullPage: true });
+  }
+  // Detalle de un producto (HU-09): se abre desde la primera tarjeta del catálogo
+  await page.goto(BASE_URL + "/catalogo/");
+  const enlace = await page.$(".tarjeta-producto__enlace");
+  if (enlace) {
+    await Promise.all([page.waitForNavigation(), enlace.click()]);
+    await revisar(page, "e3-detalle", ancho);
+    await page.screenshot({ path: new URL(`e3-detalle-${ancho}.png`, carpeta).pathname, fullPage: true });
   }
   // Estado con errores del registro (HU-01, escenarios 3 y 4)
   await page.goto(BASE_URL + "/cuentas/registro/");
@@ -109,5 +133,5 @@ if (fallos.length) {
   console.error(`\n${fallos.length} problema(s):\n- ${fallos.join("\n- ")}`);
   process.exit(1);
 }
-const vistas = ANCHOS.length * (PAGINAS.length + 1 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 1 : 0));
+const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 1 : 0));
 console.log(`\nInterfaz verificada en ${navegador}: ${vistas} vistas sin problemas.`);
