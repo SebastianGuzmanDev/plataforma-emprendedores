@@ -19,6 +19,8 @@ urlpatterns = [
     path("catalogo/", include("apps.catalogo.urls")),
     # E4 · Contacto por chat
     path("mensajes/", include("apps.contacto.urls")),
+    # E5 · Inventario
+    path("inventario/", include("apps.inventario.urls")),
 ]
 
 if settings.DEBUG:
