@@ -90,6 +90,12 @@ class InsumoForm(forms.Form):
         widget=forms.TextInput(attrs={"inputmode": "numeric", "autocomplete": "off"}),
         error_messages={"required": "Escribe el costo total del insumo en pesos."},
     )
+    # CC-10 (E6): relación insumo → gasto de materia prima (HU-20)
+    registrar_como_gasto = forms.BooleanField(
+        label="Registrar también este costo como un gasto de materia prima de hoy en Finanzas",
+        required=False,
+        initial=True,
+    )
 
     def clean_cantidad(self):
         valor = interpretar_cantidad_insumo(self.cleaned_data["cantidad"])

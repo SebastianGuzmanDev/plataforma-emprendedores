@@ -72,3 +72,27 @@ class CargarDemoTests(MediaTemporalMixin, TestCase):
         self.cargar("--limpiar", "--emprendimientos", "1", "--productos", "2")
         self.assertEqual(Producto.objects.count(), 2)
         self.assertTrue(Usuario.objects.filter(pk=real.pk).exists())
+
+    @override_settings(DEBUG=True)
+    def test_carga_ingresos_y_gastos_de_demostracion_en_varios_meses(self):
+        """E6: el resumen financiero de la demo no aparece vacío y permite cambiar de mes."""
+        from django.utils import timezone
+
+        from apps.finanzas.models import CategoriaGasto, Gasto, Ingreso
+        from apps.finanzas.reglas import mes_anterior
+
+        self.cargar("--emprendimientos", "2", "--productos", "4")
+        hoy = timezone.localdate()
+        inicio = hoy.replace(day=1)
+        emprendedor = Usuario.objects.get(correo_institucional="demo.emprendedor01@amigo.edu.co")
+        self.assertTrue(Ingreso.objects.filter(propietario=emprendedor, fecha__gte=inicio).exists())
+        self.assertTrue(Gasto.objects.filter(propietario=emprendedor, fecha__gte=inicio).exists())
+        self.assertTrue(Ingreso.objects.filter(
+            propietario=emprendedor, fecha__gte=mes_anterior(inicio), fecha__lt=inicio).exists())
+        self.assertFalse(Ingreso.objects.filter(fecha__gt=hoy).exists())
+        self.assertFalse(Gasto.objects.filter(fecha__gt=hoy).exists())
+        # CC-10: los insumos de la demo también quedan como gasto de materia prima
+        self.assertEqual(
+            Gasto.objects.filter(propietario=emprendedor, categoria=CategoriaGasto.MATERIA_PRIMA, fecha=hoy).count(),
+            emprendedor.insumos.count(),
+        )

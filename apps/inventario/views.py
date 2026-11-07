@@ -152,7 +152,10 @@ def nuevo_insumo(request):
     """HU-18 · RF-20 · CU-18."""
     form = InsumoForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        insumo = servicios.registrar_insumo(request.user, **form.cleaned_data)
-        messages.success(request, f"Registraste el insumo «{insumo.nombre}».")
+        insumo, gasto = servicios.registrar_insumo(request.user, **form.cleaned_data)
+        texto = f"Registraste el insumo «{insumo.nombre}»."
+        if gasto:  # CC-10
+            texto += " También quedó como gasto de materia prima en Finanzas."
+        messages.success(request, texto)
         return redirect("inventario:panel")
     return render(request, "inventario/insumo_form.html", {"form": form})

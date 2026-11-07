@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load portafolio %}
+{% block titulo %}Eliminar {{ tipo }} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="pagina__cuerpo">
+    <h1 class="titulo-linea">¿Eliminar el {{ tipo }} de {{ registro.monto|pesos }}?</h1>
+    <dl class="datos">
+      <div><dt>Fecha</dt><dd>{{ registro.fecha|date:"j \d\e F \d\e Y" }}</dd></div>
+      {% if registro.categoria %}<div><dt>Categoría</dt><dd>{{ registro.get_categoria_display }}</dd></div>{% endif %}
+    </dl>
+    <div class="aviso aviso--error" role="note">
+      <span class="icono-alerta" aria-hidden="true">!</span>
+      <p>Úsalo solo para corregir un registro equivocado: dejará de contar en tu resumen y no se puede deshacer.</p>
+    </div>
+    <form method="post" class="acciones">
+      {% csrf_token %}
+      <button type="submit" class="boton boton--primario">Sí, eliminar</button>
+      <a class="boton boton--secundario" href="{{ volver }}">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

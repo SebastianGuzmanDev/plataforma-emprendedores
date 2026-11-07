@@ -6,13 +6,17 @@
 <div class="contenedor">
   <div class="encabezado-pagina">
     <h1 class="titulo-linea">Mi emprendimiento</h1>
-    {% if emprendimiento %}
-      <div class="acciones acciones--sin-margen">
+    <div class="acciones acciones--sin-margen">
+      {% if emprendimiento %}
         <a class="boton boton--primario" href="{% url 'emprendimiento:publicar' %}">Publicar producto</a>
         <a class="boton boton--secundario" href="{% url 'inventario:panel' %}">Inventario</a>
+      {% endif %}
+      {# E6: las finanzas no dependen del perfil público #}
+      <a class="boton boton--secundario" href="{% url 'finanzas:resumen' %}">Finanzas</a>
+      {% if emprendimiento %}
         <a class="boton boton--secundario" href="{% url 'emprendimiento:vista_previa' %}">Ver como comprador</a>
-      </div>
-    {% endif %}
+      {% endif %}
+    </div>
   </div>
 
   {% if not emprendimiento %}

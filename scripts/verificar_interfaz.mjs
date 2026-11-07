@@ -15,6 +15,7 @@
  *
  * Pantallas del emprendedor (E2): define una cuenta emprendedora con perfil y productos
  *   EMPRENDEDOR_CORREO=... EMPRENDEDOR_CONTRASENA=... node scripts/verificar_interfaz.mjs
+ *   (incluye inventario E5 y finanzas E6)
  * Pantallas de mensajes (E4): define una cuenta con conversaciones
  *   COMPRADOR_CORREO=... COMPRADOR_CONTRASENA=... node scripts/verificar_interfaz.mjs
  */
@@ -44,6 +45,9 @@ const PAGINAS_EMPRENDEDOR = [
   ["e2-vista-previa", "/emprendimiento/vista-previa/"],
   ["e5-inventario", "/inventario/"],
   ["e5-nuevo-insumo", "/inventario/insumos/nuevo/"],
+  ["e6-finanzas", "/finanzas/"],
+  ["e6-nuevo-ingreso", "/finanzas/ingresos/nuevo/"],
+  ["e6-nuevo-gasto", "/finanzas/gastos/nuevo/"],
 ];
 const carpeta = new URL(`./capturas/${navegador}/`, import.meta.url);
 mkdirSync(carpeta, { recursive: true });
@@ -129,6 +133,22 @@ for (const ancho of ANCHOS) {
       await revisar(privada, "e5-producto", ancho);
       await privada.screenshot({ path: new URL(`e5-producto-${ancho}.png`, carpeta).pathname, fullPage: true });
     }
+    // Finanzas (E6): mes anterior, confirmación de eliminar y gasto sin categoría (HU-20, escenario 2)
+    await privada.goto(BASE_URL + "/finanzas/");
+    await Promise.all([privada.waitForNavigation(), privada.click(".periodo a")]);
+    await revisar(privada, "e6-finanzas-mes-anterior", ancho);
+    await privada.screenshot({ path: new URL(`e6-finanzas-mes-anterior-${ancho}.png`, carpeta).pathname, fullPage: true });
+    const eliminar = await privada.$(".movimiento__eliminar");
+    if (eliminar) {
+      await Promise.all([privada.waitForNavigation(), eliminar.click()]);
+      await revisar(privada, "e6-eliminar", ancho);
+      await privada.screenshot({ path: new URL(`e6-eliminar-${ancho}.png`, carpeta).pathname, fullPage: true });
+    }
+    await privada.goto(BASE_URL + "/finanzas/gastos/nuevo/");
+    await privada.fill("#id_monto", "0");
+    await Promise.all([privada.waitForNavigation(), privada.click("form.formulario button[type=submit]")]);
+    await revisar(privada, "e6-gasto-con-errores", ancho);
+    await privada.screenshot({ path: new URL(`e6-gasto-errores-${ancho}.png`, carpeta).pathname, fullPage: true });
     // Estado con errores de la publicación (HU-05, escenario 3) y del perfil (HU-04, escenario 2)
     await privada.goto(BASE_URL + "/emprendimiento/productos/nuevo/");
     await privada.fill("#id_nombre", "Arepa de prueba");
@@ -166,6 +186,6 @@ if (fallos.length) {
   console.error(`\n${fallos.length} problema(s):\n- ${fallos.join("\n- ")}`);
   process.exit(1);
 }
-const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 2 : 0) +
+const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 5 : 0) +
   (process.env.COMPRADOR_CORREO ? 2 : 0));
 console.log(`\nInterfaz verificada en ${navegador}: ${vistas} vistas sin problemas.`);

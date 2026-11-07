@@ -12,6 +12,12 @@
     {% include "cuentas/_campo.html" with campo=form.nombre %}
     {% include "cuentas/_campo.html" with campo=form.cantidad %}
     {% include "cuentas/_campo.html" with campo=form.costo %}
+    <div class="campo">
+      <div class="casilla">
+        {{ form.registrar_como_gasto }}
+        <label for="{{ form.registrar_como_gasto.id_for_label }}">{{ form.registrar_como_gasto.label }}</label>
+      </div>
+    </div>
     <div class="acciones acciones--sin-margen">
       <button type="submit" class="boton boton--primario">Registrar insumo</button>
       <a class="boton boton--secundario" href="{% url 'inventario:panel' %}">Cancelar</a>

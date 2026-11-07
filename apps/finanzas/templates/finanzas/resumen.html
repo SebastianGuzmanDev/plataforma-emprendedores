@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load portafolio finanzas %}
+{% block titulo %}Finanzas · {{ nombre_periodo }} · {{ NOMBRE_PLATAFORMA }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+  <div class="encabezado-pagina">
+    <h1 class="titulo-linea">Finanzas</h1>
+    <div class="acciones acciones--sin-margen">
+      <a class="boton boton--primario" href="{% url 'finanzas:nuevo_ingreso' %}">Registrar ingreso</a>
+      <a class="boton boton--primario" href="{% url 'finanzas:nuevo_gasto' %}">Registrar gasto</a>
+      <a class="boton boton--secundario" href="{% url 'emprendimiento:panel' %}">Mi emprendimiento</a>
+    </div>
+  </div>
+
+  <section class="bloque" aria-labelledby="titulo-periodo">
+    <div class="periodo">
+      <a class="boton boton--secundario boton--compacto" href="?mes={{ anterior|date:'Y-m' }}">← Mes anterior</a>
+      <h2 id="titulo-periodo" class="periodo__nombre">{{ nombre_periodo }}</h2>
+      {% if not es_mes_actual %}
+        <a class="boton boton--secundario boton--compacto" href="?mes={{ siguiente|date:'Y-m' }}">Mes siguiente →</a>
+      {% endif %}
+    </div>
+    <form class="selector-periodo" method="get">
+      <label for="{{ periodo_form.mes.id_for_label }}">Ver otro mes</label>
+      <div class="selector-periodo__fila">
+        {{ periodo_form.mes }}
+        <button type="submit" class="boton boton--secundario boton--compacto">Ver</button>
+      </div>
+    </form>
+
+    <div class="cifras">
+      <p class="cifra">
+        <span class="cifra__etiqueta">Ingresos</span>
+        <span class="cifra__valor">{{ resumen.total_ingresos|pesos }}</span>
+      </p>
+      <p class="cifra">
+        <span class="cifra__etiqueta">Gastos</span>
+        <span class="cifra__valor">{{ resumen.total_gastos|pesos }}</span>
+      </p>
+      <p class="cifra cifra--balance{% if resumen.balance < 0 %} cifra--perdida{% endif %}">
+        <span class="cifra__etiqueta">Balance</span>
+        <span class="cifra__valor">{{ resumen.balance|pesos_con_signo }}</span>
+        <span class="cifra__nota">
+          {% if resumen.balance > 0 %}Ganancia{% elif resumen.balance < 0 %}<span class="icono-alerta" aria-hidden="true">!</span> Pérdida{% else %}Sin ganancia ni pérdida{% endif %}
+          <span class="visualmente-oculto"> (ingresos menos gastos)</span>
+        </span>
+      </p>
+    </div>
+  </section>
+
+  {% if resumen.gastos_por_categoria %}
+    <section class="bloque" aria-labelledby="titulo-categorias">
+      <h2 id="titulo-categorias">Gastos por categoría</h2>
+      <ul class="barras">
+        {% for categoria, total in resumen.gastos_por_categoria.items %}
+          {% with porcion=total|porcentaje_de:resumen.total_gastos %}
+            <li class="barras__fila">
+              <span class="barras__nombre">{{ categoria }}</span>
+              <span class="barras__valor">{{ total|pesos }} · {{ porcion }} %</span>
+              <span class="barras__pista" aria-hidden="true"><span class="barras__relleno" style="width: {{ porcion }}%"></span></span>
+            </li>
+          {% endwith %}
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  <section class="bloque" aria-labelledby="titulo-movimientos">
+    <h2 id="titulo-movimientos">Movimientos del mes</h2>
+    {% if resumen.movimientos %}
+      <ul class="movimientos">
+        {% for movimiento in resumen.movimientos %}
+          <li class="movimiento movimiento--{{ movimiento.tipo }}">
+            <span class="movimiento__fecha">{{ movimiento.fecha|date:"j M" }}</span>
+            <span class="movimiento__detalle">
+              <span class="movimiento__tipo">{% if movimiento.tipo == "ingreso" %}Ingreso{% else %}Gasto{% endif %}</span>
+              {% if movimiento.categoria %}<span class="movimiento__categoria">{{ movimiento.categoria }}</span>{% endif %}
+            </span>
+            <span class="movimiento__monto">{% if movimiento.tipo == "gasto" %}<span class="visualmente-oculto">menos </span>{% endif %}{{ movimiento.monto|pesos }}</span>
+            <a class="movimiento__eliminar" href="{% url 'finanzas:eliminar' tipo=movimiento.tipo codigo=movimiento.codigo %}">Eliminar<span class="visualmente-oculto"> el {{ movimiento.tipo }} de {{ movimiento.monto|pesos }} del {{ movimiento.fecha|date:"j \d\e F" }}</span></a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="estado-vacio">
+        <p>No registraste movimientos en este mes. Registra tus ventas como ingresos y tus compras como gastos para ver aquí tu balance.</p>
+      </div>
+    {% endif %}
+    <p class="texto-pequeno">Los insumos que registras en <a href="{% url 'inventario:panel' %}">Inventario</a> pueden quedar también como gasto de materia prima.</p>
+  </section>
+</div>
+{% endblock %}
