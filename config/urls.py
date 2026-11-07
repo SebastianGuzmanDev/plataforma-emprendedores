@@ -15,6 +15,8 @@ urlpatterns = [
     path("cuentas/", include("apps.cuentas.urls")),
     # E2 · Perfil y productos
     path("emprendimiento/", include("apps.perfil_productos.urls")),
+    # E3 · Catálogo
+    path("catalogo/", include("apps.catalogo.urls")),
 ]
 
 if settings.DEBUG:
