@@ -17,7 +17,10 @@
         {% if es_propio %}
           <p>Este producto es tuyo. <a href="{% url 'emprendimiento:editar' codigo=producto.codigo %}">Editarlo</a></p>
         {% elif user.is_authenticated %}
-          <a class="boton boton--primario" href="{% url 'catalogo:contactar' codigo=producto.codigo %}">Contactar</a>
+          <form method="post" action="{% url 'contacto:iniciar' codigo_producto=producto.codigo %}">
+            {% csrf_token %}
+            <button type="submit" class="boton boton--primario">Contactar</button>
+          </form>
         {% else %}
           <a class="boton boton--primario" href="{% url 'cuentas:ingresar' %}?next={{ request.path|urlencode }}">Contactar</a>
           <p class="texto-pequeno">Para contactar al emprendedor debes iniciar sesión.</p>
