@@ -3,12 +3,15 @@ Vistas del módulo E1 · Cuentas y acceso (capa de presentación).
 
 CU-01 registro · CU-02 inicio y cierre de sesión · CU-03 recuperación de contraseña.
 """
+from urllib.parse import quote
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import FormView
 
 from .decorators import rol_requerido
@@ -28,6 +31,22 @@ class RegistroView(FormView):
         if request.user.is_authenticated:
             return redirect("cuentas:mi_cuenta")
         return super().dispatch(request, *args, **kwargs)
+
+    def destino_seguro(self):
+        """RNF-02: conserva la página de origen (p. ej. un producto) si es de este mismo sitio."""
+        destino = self.request.POST.get("next") or self.request.GET.get("next") or ""
+        seguro = url_has_allowed_host_and_scheme(
+            destino, allowed_hosts={self.request.get_host()}, require_https=self.request.is_secure()
+        )
+        return destino if destino and seguro else ""
+
+    def get_context_data(self, **kwargs):
+        return {**super().get_context_data(**kwargs), "next": self.destino_seguro()}
+
+    def get_success_url(self):
+        destino = self.destino_seguro()
+        ingreso = reverse("cuentas:ingresar")
+        return f"{ingreso}?next={quote(destino, safe='/')}" if destino else ingreso
 
     def form_valid(self, form):
         datos = form.cleaned_data
