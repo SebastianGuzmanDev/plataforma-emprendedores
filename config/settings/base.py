@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "apps.catalogo",
     # E4 · Contacto por chat
     "apps.contacto",
+    # E5 · Inventario
+    "apps.inventario",
 ]
 
 MIDDLEWARE = [
@@ -112,7 +114,8 @@ DOMINIOS_INSTITUCIONALES = _lista_desde_entorno("DOMINIOS_INSTITUCIONALES", "ami
 
 # RNF-06 (Ley 1581 de 2012): versión del aviso que acepta cada titular.
 # 1.1 (E2): perfil y productos en el catálogo · 1.2 (CC-03): nombre del emprendimiento · 1.3 (E4): mensajes
-AVISO_PRIVACIDAD_VERSION = "1.3"
+# 1.4 (E5): inventario e insumos
+AVISO_PRIVACIDAD_VERSION = "1.4"
 CORREO_CONTACTO_PRIVACIDAD = os.environ.get(
     "CORREO_CONTACTO_PRIVACIDAD", "privacidad@por-definir.amigo.edu.co"
 )
