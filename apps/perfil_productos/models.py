@@ -9,6 +9,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 
 
 class TransicionNoPermitida(Exception):
@@ -36,6 +37,11 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def slug(self):
+        """Identificador legible para el filtro del catálogo: «Artesanías» → «artesanias»."""
+        return slugify(self.nombre)
 
 
 class EmprendimientoQuerySet(models.QuerySet):
@@ -81,6 +87,8 @@ class Producto(models.Model):
     emprendimiento = models.ForeignKey(Emprendimiento, on_delete=models.CASCADE, related_name="productos")
     nombre = models.CharField("nombre", max_length=80)
     foto = models.ImageField("foto", upload_to="productos/")
+    # CC-06: versión reducida para las tarjetas del catálogo (RNF-01).
+    miniatura = models.ImageField("miniatura", upload_to="productos/miniaturas/", blank=True)
     # Pesos colombianos enteros; RN-07: nunca negativo.
     precio_referencia = models.DecimalField("precio de referencia", max_digits=10, decimal_places=0)
     estado = models.CharField(
@@ -99,6 +107,11 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    @property
+    def url_miniatura(self):
+        """Miniatura para las tarjetas; si aún no existe, la foto completa."""
+        return self.miniatura.url if self.miniatura else self.foto.url
 
     @property
     def categoria(self):

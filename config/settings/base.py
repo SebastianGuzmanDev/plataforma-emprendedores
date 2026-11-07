@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     "apps.cuentas",
     # E2 · Perfil y productos
     "apps.perfil_productos",
+    # E3 · Catálogo
+    "apps.catalogo",
 ]
 
 MIDDLEWARE = [
@@ -146,6 +148,8 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / "media"))
 FOTO_LIMITE_MB = 5  # RF-06 · RN-07
 FOTO_LADO_MAXIMO_PX = 1600
+MINIATURA_LADO_MAXIMO_PX = 600  # CC-06: tarjetas del catálogo (RNF-01)
+CATALOGO_PRODUCTOS_POR_PAGINA = 24
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-responder@amigo.edu.co")

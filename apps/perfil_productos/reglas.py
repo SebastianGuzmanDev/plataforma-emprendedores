@@ -81,13 +81,22 @@ def validar_foto(archivo):
         raise ValidationError("El archivo no es una imagen JPG, PNG o WebP.", code="foto_invalida")
 
 
-def procesar_foto(archivo):
+def procesar_foto(archivo, nombre=None):
     """
     Normaliza la foto antes de guardarla (D5):
     - corrige la orientación y elimina todos los metadatos EXIF, incluida la ubicación GPS (RNF-06);
     - limita el lado mayor a 1600 px y la guarda como JPEG (catálogo liviano, RNF-01);
     - usa un nombre aleatorio que no revela el nombre original del archivo.
     """
+    return _jpeg_normalizado(archivo, settings.FOTO_LADO_MAXIMO_PX, calidad=85, nombre=nombre)
+
+
+def crear_miniatura(archivo, nombre=None):
+    """CC-06 · Miniatura de hasta 600 px para las tarjetas del catálogo (RNF-01)."""
+    return _jpeg_normalizado(archivo, settings.MINIATURA_LADO_MAXIMO_PX, calidad=80, nombre=nombre)
+
+
+def _jpeg_normalizado(archivo, lado, *, calidad, nombre=None):
     imagen = _abrir_imagen(archivo)
     imagen = ImageOps.exif_transpose(imagen)
     if imagen.mode in ("RGBA", "LA", "P"):
@@ -97,9 +106,8 @@ def procesar_foto(archivo):
         imagen = fondo
     else:
         imagen = imagen.convert("RGB")
-    lado = settings.FOTO_LADO_MAXIMO_PX
     imagen.thumbnail((lado, lado), Image.Resampling.LANCZOS)
     salida = io.BytesIO()
-    imagen.save(salida, "JPEG", quality=85, optimize=True, progressive=True)
+    imagen.save(salida, "JPEG", quality=calidad, optimize=True, progressive=True)
     archivo.seek(0)
-    return ContentFile(salida.getvalue(), name=f"{uuid.uuid4().hex}.jpg")
+    return ContentFile(salida.getvalue(), name=nombre or f"{uuid.uuid4().hex}.jpg")
