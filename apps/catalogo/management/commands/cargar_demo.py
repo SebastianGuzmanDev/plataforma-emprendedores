@@ -18,9 +18,13 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 from PIL import Image, ImageDraw, ImageFont
 
 from apps.contacto import servicios as contacto
+from apps.finanzas import servicios as finanzas
+from apps.finanzas.models import CategoriaGasto
+from apps.finanzas.reglas import mes_anterior
 from apps.cuentas.models import Rol, Usuario
 from apps.inventario import servicios as inventario
 from apps.cuentas.servicios import registrar_usuario
@@ -168,7 +172,34 @@ class Command(BaseCommand):
                 if not usuario.insumos.exists():
                     for nombre, cantidad, costo in INSUMOS[perfil.categoria.nombre]:
                         inventario.registrar_insumo(
-                            usuario, nombre=nombre, cantidad=Decimal(cantidad.replace(",", ".")), costo=costo
+                            usuario, nombre=nombre, cantidad=Decimal(cantidad.replace(",", ".")), costo=costo,
+                            registrar_como_gasto=True,  # CC-10
+                        )
+
+            # E6: ingresos y gastos del mes actual y de los dos anteriores (nunca con fecha futura).
+            hoy = timezone.localdate()
+            meses = [hoy.replace(day=1)]
+            for _ in range(2):
+                meses.append(mes_anterior(meses[-1]))
+            otras_categorias = [c for c in CategoriaGasto.values if c != CategoriaGasto.MATERIA_PRIMA]
+            for usuario, _perfil in creados:
+                if usuario.ingresos.exists():
+                    continue
+                for inicio in meses:
+                    ultimo_dia = hoy.day if inicio.month == hoy.month and inicio.year == hoy.year else 28
+                    for _ in range(aleatorio.randrange(4, 9)):
+                        finanzas.registrar_ingreso(
+                            usuario, monto=aleatorio.randrange(8, 61) * 1000,
+                            fecha=inicio.replace(day=aleatorio.randrange(1, ultimo_dia + 1)),
+                        )
+                    for _ in range(aleatorio.randrange(2, 5)):
+                        finanzas.registrar_gasto(
+                            usuario, monto=aleatorio.randrange(3, 41) * 1000,
+                            # en el mes actual la materia prima sale de los insumos (CC-10)
+                            categoria=aleatorio.choice(
+                                otras_categorias if inicio == meses[0] else CategoriaGasto.values
+                            ),
+                            fecha=inicio.replace(day=aleatorio.randrange(1, ultimo_dia + 1)),
                         )
 
             # E4: el comprador escribe a varios emprendimientos; los emprendedores tienen mensajes sin leer.
