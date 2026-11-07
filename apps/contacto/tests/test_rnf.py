@@ -76,10 +76,10 @@ class LegalTests(TestCase):
         self.assertEqual({c.name for c in Mensaje._meta.concrete_fields}, self.CAMPOS_MENSAJE)
 
     def test_rnf06_el_aviso_informa_el_tratamiento_de_los_mensajes(self):
-        self.assertEqual(settings.AVISO_PRIVACIDAD_VERSION, "1.3")
+        # La versión vigente la fija el último cambio del aviso (1.4 desde E5).
         respuesta = self.client.get(reverse("aviso_privacidad"))
         for texto in [
-            "Versión 1.3",
+            f"Versión {settings.AVISO_PRIVACIDAD_VERSION}",
             "Los mensajes que envías",
             "solo las dos personas de la conversación",
             "no ve tu correo institucional",

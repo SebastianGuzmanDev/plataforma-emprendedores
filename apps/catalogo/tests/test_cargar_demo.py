@@ -50,6 +50,17 @@ class CargarDemoTests(MediaTemporalMixin, TestCase):
         self.assertGreater(mensajes_sin_leer(emprendedor), 0)
 
     @override_settings(DEBUG=True)
+    def test_carga_existencias_coherentes_e_insumos_de_demostracion(self):
+        from apps.inventario.models import Insumo
+
+        self.cargar("--emprendimientos", "2", "--productos", "8")
+        con_inventario = Producto.objects.exclude(existencias=None)
+        self.assertTrue(con_inventario.exists())
+        self.assertFalse(con_inventario.filter(estado="DISPONIBLE", existencias=0).exists())
+        self.assertFalse(con_inventario.filter(estado="AGOTADO").exclude(existencias=0).exists())
+        self.assertTrue(Insumo.objects.exists())
+
+    @override_settings(DEBUG=True)
     def test_solo_disponibles_deja_todos_los_productos_visibles(self):
         self.cargar("--emprendimientos", "2", "--productos", "6", "--solo-disponibles")
         self.assertEqual(Producto.objects.visibles_en_catalogo().filter(estado="DISPONIBLE").count(), 6)
