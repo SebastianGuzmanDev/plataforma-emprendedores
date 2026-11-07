@@ -2,7 +2,7 @@
 
 **Proyecto:** Plataforma de Emprendedores (MVP) · Universidad Católica Luis Amigó
 **Fuentes:** Entregable 1 (HU-04 a HU-06, RF-05 a RF-08, RNF), Entregable 2 (CU-04 a CU-06, diagramas A2, ES1 y S3, modelo de dominio, reglas RN-05 a RN-09, decisión D5) y *Manual de Identidad Visual* versión 02.
-**Estado:** entregada para revisión, con los cambios aprobados el 06/11/2026: CC-02 (reactivación), CC-03 (nombre del emprendimiento) y CC-04 (plataforma **Emprendi Amigos**). Ver la sección 8 y el [registro de cambios](../registro-de-cambios.md). No se ha iniciado la Épica 3.
+**Estado:** aprobada con los cambios CC-02 (reactivación), CC-03 (nombre del emprendimiento) y CC-04 (plataforma **Emprendi Amigos**); ver la sección 8 y el [registro de cambios](../registro-de-cambios.md). La Épica 3 agrega a este módulo la miniatura de cada producto (CC-06).
 
 ---
 
