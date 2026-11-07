@@ -21,6 +21,8 @@ from django.db import transaction
 from django.utils import timezone
 from PIL import Image, ImageDraw, ImageFont
 
+from apps.administracion import servicios as administracion
+from apps.administracion.models import Desactivacion, MotivoDesactivacion
 from apps.contacto import servicios as contacto
 from apps.finanzas import servicios as finanzas
 from apps.finanzas.models import CategoriaGasto
@@ -29,7 +31,7 @@ from apps.cuentas.models import Rol, Usuario
 from apps.inventario import servicios as inventario
 from apps.cuentas.servicios import registrar_usuario
 from apps.perfil_productos import servicios
-from apps.perfil_productos.models import Categoria, Emprendimiento
+from apps.perfil_productos.models import ESTADOS_VISIBLES_EN_CATALOGO, Categoria, Emprendimiento
 
 PREFIJO = "demo."
 DOMINIO = "amigo.edu.co"
@@ -219,8 +221,29 @@ class Command(BaseCommand):
                     contacto.enviar_mensaje(conversacion, cuenta_comprador, "Perfecto, paso a las 12. ¡Gracias!")
                 charlas += 1
 
+            # E7: cuenta de administración (RF-03: el rol se asigna internamente) y una desactivación
+            # de ejemplo con su aviso pendiente para demo.emprendedor02. No se hace con --solo-disponibles.
+            correo_admin = f"{PREFIJO}administrador@{DOMINIO}"
+            administrador = Usuario.objects.filter(correo_institucional=correo_admin).first()
+            if administrador is None:
+                administrador = registrar_usuario(
+                    correo=correo_admin, contrasena=contrasena, rol=Rol.COMPRADOR, acepta_aviso=True
+                )
+                administrador.rol = Rol.ADMINISTRADOR
+                administrador.save(update_fields=["rol"])
+            if not solo_disponibles and len(creados) > 1:
+                _, perfil = creados[1]
+                if not Desactivacion.objects.filter(producto__emprendimiento=perfil).exists():
+                    producto = perfil.productos.filter(estado__in=ESTADOS_VISIBLES_EN_CATALOGO).order_by("-id").first()
+                    if producto is not None:
+                        administracion.desactivar_producto(
+                            administrador, producto, motivo=MotivoDesactivacion.ENGANOSO,
+                            detalle="La foto no corresponde al producto que se ofrece.",
+                        )
+
         self.stdout.write(self.style.SUCCESS(
             f"Listo: {len(creados)} emprendimientos, {productos} productos y {charlas} conversaciones de demostración."
         ))
-        self.stdout.write(f"Comprador: {comprador} · Emprendedores: {PREFIJO}emprendedor01@{DOMINIO} … "
+        self.stdout.write(f"Comprador: {comprador} · Administrador: {PREFIJO}administrador@{DOMINIO} · "
+                          f"Emprendedores: {PREFIJO}emprendedor01@{DOMINIO} … "
                           f"· Contraseña: {contrasena}")

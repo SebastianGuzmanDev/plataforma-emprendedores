@@ -96,3 +96,22 @@ class CargarDemoTests(MediaTemporalMixin, TestCase):
             Gasto.objects.filter(propietario=emprendedor, categoria=CategoriaGasto.MATERIA_PRIMA, fecha=hoy).count(),
             emprendedor.insumos.count(),
         )
+
+    @override_settings(DEBUG=True)
+    def test_crea_un_administrador_y_una_desactivacion_con_aviso_pendiente(self):
+        """E7: cuenta de administración y un producto desactivado por ella, con aviso para su dueño."""
+        from apps.administracion.models import Desactivacion
+        from apps.administracion.servicios import avisos_pendientes
+        from apps.cuentas.models import Rol
+
+        self.cargar("--emprendimientos", "2", "--productos", "6")
+        admin = Usuario.objects.get(correo_institucional="demo.administrador@amigo.edu.co")
+        self.assertEqual(admin.rol, Rol.ADMINISTRADOR)
+        registro = Desactivacion.objects.get()
+        self.assertEqual((registro.administrador, registro.producto.estado), (admin, "DESACTIVADO"))
+        dueno = registro.producto.emprendimiento.propietario
+        self.assertEqual(dueno.correo_institucional, "demo.emprendedor02@amigo.edu.co")
+        self.assertEqual(avisos_pendientes(dueno).count(), 1)
+        # Cargar de nuevo no duplica la desactivación
+        self.cargar("--emprendimientos", "2", "--productos", "0")
+        self.assertEqual(Desactivacion.objects.count(), 1)
