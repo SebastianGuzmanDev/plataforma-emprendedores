@@ -1203,3 +1203,193 @@ p {
 .detalle-producto__emprendimiento h2 {
   margin-bottom: 0.5rem;
 }
+
+/* ================================================================== E4 · Contacto por chat */
+.contador {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  margin-left: 0.2rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--color-acento);
+  color: var(--color-texto);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.conversaciones {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.conversacion-item {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 0.25rem 0.85rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 0.5rem;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.conversacion-item:hover {
+  border-color: var(--color-primario);
+}
+
+.conversacion-item--sin-leer {
+  border-left: 6px solid var(--color-acento);
+}
+
+.conversacion-item__foto {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+}
+
+.conversacion-item__cuerpo {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.conversacion-item__titulo {
+  color: var(--color-primario);
+  font-weight: 700;
+}
+
+.conversacion-item__producto,
+.conversacion-item__meta {
+  font-size: 0.9rem;
+}
+
+.conversacion-item__meta {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+@media (min-width: 40rem) {
+  .conversacion-item {
+    grid-template-columns: 56px 1fr auto;
+  }
+
+  .conversacion-item__meta {
+    grid-column: auto;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+.insignia-sin-leer {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-acento);
+  color: var(--color-texto);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.chat {
+  max-width: 46rem;
+  padding-bottom: 2rem;
+}
+
+.chat__producto {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 0.5rem;
+}
+
+.chat__producto img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+}
+
+.chat__producto p {
+  margin: 0.15rem 0 0;
+}
+
+.chat__actualizar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.chat__actualizar p {
+  margin: 0;
+}
+
+.chat__mensajes {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.mensaje {
+  max-width: min(85%, 32rem);
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.75rem;
+}
+
+.mensaje--propio {
+  justify-self: end;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  border-bottom-right-radius: 0.2rem;
+}
+
+.mensaje--ajeno {
+  justify-self: start;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+  border-bottom-left-radius: 0.2rem;
+}
+
+.mensaje__autor {
+  margin: 0 0 0.15rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mensaje__texto {
+  white-space: normal;
+}
+
+.mensaje__hora {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.chat__formulario {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-borde);
+}
+
+.chat__formulario .boton {
+  justify-self: end;
+  min-width: 8rem;
+}
