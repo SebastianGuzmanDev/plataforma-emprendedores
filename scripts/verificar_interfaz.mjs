@@ -15,6 +15,8 @@
  *
  * Pantallas del emprendedor (E2): define una cuenta emprendedora con perfil y productos
  *   EMPRENDEDOR_CORREO=... EMPRENDEDOR_CONTRASENA=... node scripts/verificar_interfaz.mjs
+ * Pantallas de mensajes (E4): define una cuenta con conversaciones
+ *   COMPRADOR_CORREO=... COMPRADOR_CONTRASENA=... node scripts/verificar_interfaz.mjs
  */
 import { mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -127,11 +129,33 @@ for (const ancho of ANCHOS) {
     await contexto.close();
   }
 }
+if (process.env.COMPRADOR_CORREO) {
+  // Pantallas de mensajes (E4) con una cuenta que ya tenga conversaciones
+  for (const ancho of ANCHOS) {
+    const contexto = await browser.newContext({ viewport: { width: ancho, height: 800 } });
+    const privada = await contexto.newPage();
+    await privada.goto(BASE_URL + "/cuentas/ingresar/");
+    await privada.fill("#id_username", process.env.COMPRADOR_CORREO);
+    await privada.fill("#id_password", process.env.COMPRADOR_CONTRASENA || "");
+    await Promise.all([privada.waitForNavigation(), privada.click("form.formulario button[type=submit]")]);
+    await privada.goto(BASE_URL + "/mensajes/");
+    await revisar(privada, "e4-mensajes", ancho);
+    await privada.screenshot({ path: new URL(`e4-mensajes-${ancho}.png`, carpeta).pathname, fullPage: true });
+    const conversacion = await privada.$(".conversacion-item");
+    if (conversacion) {
+      await Promise.all([privada.waitForNavigation(), conversacion.click()]);
+      await revisar(privada, "e4-conversacion", ancho);
+      await privada.screenshot({ path: new URL(`e4-conversacion-${ancho}.png`, carpeta).pathname, fullPage: true });
+    }
+    await contexto.close();
+  }
+}
 await browser.close();
 
 if (fallos.length) {
   console.error(`\n${fallos.length} problema(s):\n- ${fallos.join("\n- ")}`);
   process.exit(1);
 }
-const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 1 : 0));
+const vistas = ANCHOS.length * (PAGINAS.length + 2 + (process.env.EMPRENDEDOR_CORREO ? PAGINAS_EMPRENDEDOR.length + 1 : 0) +
+  (process.env.COMPRADOR_CORREO ? 2 : 0));
 console.log(`\nInterfaz verificada en ${navegador}: ${vistas} vistas sin problemas.`);

@@ -19,6 +19,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from PIL import Image, ImageDraw, ImageFont
 
+from apps.contacto import servicios as contacto
 from apps.cuentas.models import Rol, Usuario
 from apps.cuentas.servicios import registrar_usuario
 from apps.perfil_productos import servicios
@@ -92,13 +93,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--emprendimientos", type=int, default=10)
         parser.add_argument("--productos", type=int, default=100, help="Total de productos a crear")
+        parser.add_argument("--conversaciones", type=int, default=3,
+                            help="Conversaciones del comprador de demostración con mensajes sin leer (E4)")
         parser.add_argument("--contrasena", default="Clave-Segura-2026")
         parser.add_argument("--limpiar", action="store_true", help="Borra antes los datos de demostración")
         parser.add_argument("--solo-disponibles", action="store_true",
                             help="Todos los productos quedan Disponibles (para medir RNF-01 con 100 visibles)")
         parser.add_argument("--forzar", action="store_true", help="Permite ejecutarlo con DEBUG desactivado")
 
-    def handle(self, *args, emprendimientos, productos, contrasena, limpiar, forzar, solo_disponibles, **opciones):
+    def handle(self, *args, emprendimientos, productos, contrasena, limpiar, forzar, solo_disponibles,
+               conversaciones, **opciones):
         if not settings.DEBUG and not forzar:
             raise CommandError("DEBUG está desactivado. Usa --forzar solo en un entorno de pruebas sin datos reales.")
         if emprendimientos < 1 or productos < 0:
@@ -109,8 +113,9 @@ class Command(BaseCommand):
                 borrados, _ = Usuario.objects.filter(correo_institucional__startswith=PREFIJO).delete()
                 self.stdout.write(f"Datos de demostración anteriores borrados ({borrados} registros).")
             comprador = f"{PREFIJO}comprador@{DOMINIO}"
-            if not Usuario.objects.filter(correo_institucional=comprador).exists():
-                registrar_usuario(correo=comprador, contrasena=contrasena, rol=Rol.COMPRADOR, acepta_aviso=True)
+            cuenta_comprador = Usuario.objects.filter(correo_institucional=comprador).first() or registrar_usuario(
+                correo=comprador, contrasena=contrasena, rol=Rol.COMPRADOR, acepta_aviso=True
+            )
 
             creados = []
             for i in range(emprendimientos):
@@ -145,8 +150,25 @@ class Command(BaseCommand):
                 elif suerte < 0.15:
                     servicios.desactivar_producto(producto)
 
+            # E4: el comprador escribe a varios emprendimientos; los emprendedores tienen mensajes sin leer.
+            charlas = 0
+            for usuario, perfil in creados[1:] + creados[:1]:
+                if charlas >= conversaciones:
+                    break
+                producto = perfil.productos.filter(estado="DISPONIBLE").first()
+                if producto is None:
+                    continue
+                conversacion, nueva = contacto.iniciar_conversacion(cuenta_comprador, producto)
+                if not nueva:
+                    continue
+                contacto.enviar_mensaje(conversacion, cuenta_comprador, f"Hola, ¿tienes «{producto.nombre}» disponible hoy?")
+                if charlas == 0:
+                    contacto.enviar_mensaje(conversacion, usuario, f"¡Hola! Sí, hasta las 2 p. m. Te lo entrego en {perfil.zona_entrega.lower()}.")
+                    contacto.enviar_mensaje(conversacion, cuenta_comprador, "Perfecto, paso a las 12. ¡Gracias!")
+                charlas += 1
+
         self.stdout.write(self.style.SUCCESS(
-            f"Listo: {len(creados)} emprendimientos y {productos} productos de demostración."
+            f"Listo: {len(creados)} emprendimientos, {productos} productos y {charlas} conversaciones de demostración."
         ))
         self.stdout.write(f"Comprador: {comprador} · Emprendedores: {PREFIJO}emprendedor01@{DOMINIO} … "
                           f"· Contraseña: {contrasena}")
