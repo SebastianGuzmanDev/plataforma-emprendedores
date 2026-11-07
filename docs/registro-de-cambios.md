@@ -12,7 +12,8 @@ Proceso de la sección 4.2.2 del Entregable 2: registrar, evaluar el impacto, de
 | CC-05 | 06/11/2026 | Confirmar los supuestos S-E2-1 (categoría "Otros") y S-E2-2 (precio de 0 permitido) | Supuestos de diseño | Anexo B del Entregable 2 | 0 | **Aprobada** (sin cambios de código) |
 | CC-06 | 07/11/2026 | Miniatura de 600 px por producto para las tarjetas del catálogo, generada junto con la foto | Diseño (sin cambio de requerimiento) | Clase `Producto` (atributo `miniatura`), S3 ("guardar(foto)" guarda foto y miniatura), D5, migración `0004_miniatura` | ≈ 0,5 | **Aprobada** (07/11/2026) y aplicada en E3 |
 | CC-07 | 07/11/2026 | Confirmar el punto B.2: cualquier cuenta que no sea la dueña del producto puede contactar, incluso otro emprendedor; la búsqueda se mantiene solo por el nombre del producto (RF-11) | Supuestos de diseño | HU-11, CU-11, CU-10 | 0 | **Aprobada** (sin cambios de código) |
-| CC-08 | 07/11/2026 | El registro conserva la página de origen: quien se registra desde "Contactar" vuelve al producto después de iniciar sesión | Diseño (flujos A1 y A3, para RNF-02) | CU-01, A1, A3, plantillas de registro e ingreso, `test_rnf02.py` | ≈ 0,5 | **Aplicada en E4; pendiente de visto bueno** con la aprobación de la épica |
+| CC-08 | 07/11/2026 | El registro conserva la página de origen: quien se registra desde "Contactar" vuelve al producto después de iniciar sesión | Diseño (flujos A1 y A3, para RNF-02) | CU-01, A1, A3, plantillas de registro e ingreso, `test_rnf02.py` | ≈ 0,5 | **Aprobada** (07/11/2026) y aplicada en E4 |
+| CC-09 | 07/11/2026 | Coherencia entre inventario y estado (punto B.2): una entrada sobre un producto *Agotado* lo vuelve *Disponible*; registrar 0 existencias lo deja *Agotado*; "Marcar disponible" no se permite con existencias en 0 | Diseño (ES1) y requerimiento (RF-18) | RF-18, HU-16, CU-16, A4, ES1 (`docs/diagramas/ES1-producto-v2.puml`), CP-15.3, CP-16.5, CP-16.6 | ≈ 0,5 | **Aplicada en E5; pendiente de visto bueno** con la aprobación de la épica |
 
 ## Texto actualizado de los artefactos
 
@@ -29,6 +30,10 @@ Proceso de la sección 4.2.2 del Entregable 2: registrar, evaluar el impacto, de
 > **Escenario 6: Editar un producto agotado. Dado que** tengo un producto agotado, **cuando** cambio su precio y guardo, **entonces** el catálogo muestra el precio nuevo y el producto sigue agotado.
 
 **HU-04, escenario 2 (CC-03):** el nombre se suma a los campos obligatorios que se señalan si están vacíos.
+
+**HU-16, escenario nuevo (CC-09):**
+
+> **Escenario 4: Reponer un producto agotado. Dado que** tengo un producto agotado, **cuando** registro una entrada válida, **entonces** las existencias se actualizan y el producto vuelve a "Disponible".
 
 **ES1 (CC-02):** nueva transición *Agotado → Disponible* ("marcar disponible") y actividad interna "editar" en *Agotado*. *Desactivado* conserva su carácter definitivo. Fuente actualizada: `docs/diagramas/ES1-producto-v2.puml`.
 

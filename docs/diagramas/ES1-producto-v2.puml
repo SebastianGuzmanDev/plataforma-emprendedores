@@ -25,7 +25,7 @@ Desactivado : no aparece en el catálogo
 Desactivado : enlace directo: aviso de "no disponible" [HU-09]
 
 Disponible --> Agotado : marcar agotado [HU-06]\no salida que deja las existencias en 0 [HU-16]
-Agotado --> Disponible : marcar disponible [CC-02]
+Agotado --> Disponible : marcar disponible [CC-02]\no entrada de inventario [CC-09]
 Disponible --> Desactivado : desactivar [HU-06]\no desactivación del administrador [HU-22]
 Agotado --> Desactivado : desactivar [HU-06]\no desactivación del administrador [HU-22]
 
@@ -39,7 +39,8 @@ note right of Desactivado
 end note
 
 note bottom of Agotado
-  Pendiente para E5 (punto B.2): si una entrada de
-  inventario debe volver a dejarlo Disponible.
+  CC-09: con inventario en 0 no se puede
+  marcar disponible a mano; una entrada
+  de inventario lo vuelve a Disponible.
 end note
 @enduml
